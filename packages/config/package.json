@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "name": "@gem-bind/config",
+  "version": "2.1.0",
+  "description": "Gemjs common config"
+}

@@ -1,0 +1,20 @@
+{
+  "private": true,
+  "name": "examples",
+  "version": "2.2.0",
+  "description": "gem bind examples",
+  "scripts": {
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite serve"
+  },
+  "dependencies": {
+    "@mantou/gem": "^2.2.0",
+    "@gem-bind/marked": "^0.0.1"
+  },
+  "devDependencies": {
+    "@gem-bind/config": "^2.1.0",
+    "vite": "^5.2.10",
+    "vite-plugin-virtual-mpa": "^1.9.3"
+  }
+}

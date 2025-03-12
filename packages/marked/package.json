@@ -1,0 +1,36 @@
+{
+  "name": "@gem-bind/marked",
+  "version": "0.0.1",
+  "description": "marked gem element",
+  "keywords": [
+    "gem",
+    "marked"
+  ],
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "swc --strip-leading-paths src --out-dir ./dist",
+    "build:type": "tsc --emitDeclarationOnly --outDir ./dist",
+    "start": "concurrently \"pnpm build --watch\" \"pnpm build:type --watch\"",
+    "prepublishOnly": "pnpm build:type && pnpm build"
+  },
+  "dependencies": {
+    "@mantou/gem": "^2.2.0",
+    "@swc/helpers": "^0.5.15",
+    "duoyun-ui": "^2.2.0",
+    "marked": "^15.0.7"
+  },
+  "devDependencies": {
+    "@gem-bind/config": "^2.1.0"
+  },
+  "author": "mantou132",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mantou132/gem-bind.git",
+    "directory": "packages/marked"
+  },
+  "bugs": {
+    "url": "https://github.com/mantou132/gem-bind/issues"
+  },
+  "homepage": "https://github.com/mantou132/gem-bind#readme"
+}
