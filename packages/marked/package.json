@@ -2,10 +2,7 @@
   "name": "@gem-bind/marked",
   "version": "0.0.1",
   "description": "marked gem element",
-  "keywords": [
-    "gem",
-    "marked"
-  ],
+  "keywords": ["gem", "marked"],
   "main": "dist/index.js",
   "scripts": {
     "build": "swc --strip-leading-paths src --out-dir ./dist",
@@ -14,7 +11,7 @@
     "prepublishOnly": "pnpm build:type && pnpm build"
   },
   "dependencies": {
-    "@mantou/gem": "^2.2.0",
+    "@mantou/gem": "^2.2.1",
     "@swc/helpers": "^0.5.15",
     "duoyun-ui": "^2.2.0",
     "marked": "^15.0.7"

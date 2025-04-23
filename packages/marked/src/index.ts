@@ -1,5 +1,7 @@
-import { marked } from 'marked';
 import { blockContainer } from 'duoyun-ui/lib/styles';
+import { marked } from 'marked';
+
+import './types';
 
 const style = css``;
 
@@ -12,19 +14,18 @@ export class GemBindMarkedElement extends GemElement {
 
   #ob = new MutationObserver(() => this.#render());
 
-  mounted = () => {
+  @mounted()
+  #mounted = () => {
     this.#render();
     this.#ob.observe(this, { characterData: true, childList: true, subtree: true });
+  };
 
-    this.effect(
-      () => {
-        if (!this.mdStyle) return;
-        const sheets = this.shadowRoot!.adoptedStyleSheets;
-        this.shadowRoot!.adoptedStyleSheets = [...sheets, this.mdStyle];
-        return () => (this.shadowRoot!.adoptedStyleSheets = sheets);
-      },
-      () => [this.mdStyle],
-    );
+  @effect((i) => [i.mdStyle])
+  #update = () => {
+    if (!this.mdStyle) return;
+    const sheets = this.shadowRoot!.adoptedStyleSheets;
+    this.shadowRoot!.adoptedStyleSheets = [...sheets, this.mdStyle];
+    return () => (this.shadowRoot!.adoptedStyleSheets = sheets);
   };
 
   #render = async () => {

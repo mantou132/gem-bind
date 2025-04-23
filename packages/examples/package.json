@@ -9,7 +9,7 @@
     "start": "vite serve"
   },
   "dependencies": {
-    "@mantou/gem": "^2.2.0",
+    "@mantou/gem": "^2.2.1",
     "@gem-bind/marked": "^0.0.1"
   },
   "devDependencies": {
