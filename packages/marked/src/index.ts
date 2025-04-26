@@ -16,7 +16,6 @@ export class GemBindMarkedElement extends GemElement {
 
   @mounted()
   #mounted = () => {
-    this.#render();
     this.#ob.observe(this, { characterData: true, childList: true, subtree: true });
   };
 
@@ -28,6 +27,7 @@ export class GemBindMarkedElement extends GemElement {
     return () => (this.shadowRoot!.adoptedStyleSheets = sheets);
   };
 
+  @effect()
   #render = async () => {
     this.shadowRoot!.innerHTML = await marked.parse(this.innerHTML);
   };

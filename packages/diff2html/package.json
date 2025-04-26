@@ -1,10 +1,10 @@
 {
-  "name": "@gem-bind/marked",
+  "name": "@gem-bind/diff2html",
   "version": "0.0.1",
-  "description": "marked gem element",
+  "description": "diff2html gem element",
   "keywords": [
     "gem",
-    "marked"
+    "diff2html"
   ],
   "main": "dist/index.js",
   "scripts": {
@@ -16,8 +16,8 @@
   "dependencies": {
     "@mantou/gem": "^2.2.1",
     "@swc/helpers": "^0.5.15",
-    "duoyun-ui": "^2.2.0",
-    "marked": "^15.0.7"
+    "diff2html": "^3.4.51",
+    "duoyun-ui": "^2.2.0"
   },
   "devDependencies": {
     "@gem-bind/config": "^2.1.0"
@@ -27,7 +27,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mantou132/gem-bind.git",
-    "directory": "packages/marked"
+    "directory": "packages/diff2html"
   },
   "bugs": {
     "url": "https://github.com/mantou132/gem-bind/issues"
