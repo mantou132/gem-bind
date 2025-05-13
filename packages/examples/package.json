@@ -11,6 +11,7 @@
   "dependencies": {
     "@mantou/gem": "^2.2.1",
     "@gem-bind/diff2html": "^0.0.1",
+    "@gem-bind/lottie": "^0.0.1",
     "@gem-bind/marked": "^0.0.1"
   },
   "devDependencies": {

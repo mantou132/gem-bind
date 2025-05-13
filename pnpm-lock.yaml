@@ -78,6 +78,9 @@ importers:
       '@gem-bind/diff2html':
         specifier: ^0.0.1
         version: link:../diff2html
+      '@gem-bind/lottie':
+        specifier: ^0.0.1
+        version: link:../lottie
       '@gem-bind/marked':
         specifier: ^0.0.1
         version: link:../marked
@@ -94,6 +97,25 @@ importers:
       vite-plugin-virtual-mpa:
         specifier: ^1.9.3
         version: 1.12.1(@swc/core@1.11.21)(postcss@8.5.3)(typescript@5.8.2)(vite@5.4.14(@types/node@22.13.10)(terser@5.39.0))(yaml@2.7.0)
+
+  packages/lottie:
+    dependencies:
+      '@mantou/gem':
+        specifier: ^2.2.1
+        version: 2.2.1
+      '@swc/helpers':
+        specifier: ^0.5.15
+        version: 0.5.15
+      duoyun-ui:
+        specifier: ^2.2.0
+        version: 2.2.0(@mantou/gem@2.2.1)
+      lottie-web:
+        specifier: ^5.12.2
+        version: 5.12.2
+    devDependencies:
+      '@gem-bind/config':
+        specifier: ^2.1.0
+        version: link:../config
 
   packages/marked:
     dependencies:
@@ -1190,7 +1212,7 @@ packages:
     engines: {node: '>=18'}
 
   ansi-regex@5.0.1:
-    resolution: {integrity: sha1-CCyyyJyf6GWaMRpTvWpNxTAdswQ=}
+    resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
     engines: {node: '>=8'}
 
   ansi-regex@6.1.0:
@@ -1198,11 +1220,11 @@ packages:
     engines: {node: '>=12'}
 
   ansi-styles@4.3.0:
-    resolution: {integrity: sha1-7dgDYornHATIWuegkG7a00tkiTc=}
+    resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==}
     engines: {node: '>=8'}
 
   ansi-styles@5.2.0:
-    resolution: {integrity: sha1-B0SWkK1Fd30ZJKwquy/IiV26g2s=}
+    resolution: {integrity: sha512-Cxwpt2SfTzTtXcfOlzGEee8O+c+MmUgGrNiBcXnuWxuFJHe6a5Hz7qwhwe5OgaSYI0IJvkLqWX1ASG+cJOkEiA==}
     engines: {node: '>=10'}
 
   ansi-styles@6.2.1:
@@ -1437,11 +1459,11 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
   color-convert@2.0.1:
-    resolution: {integrity: sha1-ctOmjVmMm9s68q0ehPIdiWq9TeM=}
+    resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
     engines: {node: '>=7.0.0'}
 
   color-name@1.1.4:
-    resolution: {integrity: sha1-wqCah6y95pVD3m9j+jmVyCbFNqI=}
+    resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
 
   color-support@1.1.3:
     resolution: {integrity: sha1-k4NDeaHMmgxh+C9S8NBDIiUb1aI=}
@@ -2429,6 +2451,9 @@ packages:
     resolution: {integrity: sha512-9ie8ItPR6tjY5uYJh8K/Zrv/RMZ5VOlOWvtZdEHYSTFKZfIBPQa9tOAEeAWhd+AnIneLJ22w5fjOYtoutpWq5w==}
     engines: {node: '>=18'}
 
+  lottie-web@5.12.2:
+    resolution: {integrity: sha512-uvhvYPC8kGPjXT3MyKMrL3JitEAmDMp30lVkuq/590Mw9ok6pWcFCwXJveo0t5uqYw1UREQHofD+jVpdjBv8wg==}
+
   lower-case@2.0.2:
     resolution: {integrity: sha1-b6I3xj29xKgsoP2ILkci3F5jTig=}
 
@@ -3339,7 +3364,7 @@ packages:
     resolution: {integrity: sha1-QvEUWUpGzxqOMLCoT1bHjD7awh4=}
 
   strip-ansi@6.0.1:
-    resolution: {integrity: sha1-nibGPTD1NEPpSJSVshBdN7Z6hdk=}
+    resolution: {integrity: sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==}
     engines: {node: '>=8'}
 
   strip-ansi@7.1.0:
@@ -3663,7 +3688,7 @@ packages:
     engines: {node: '>=8'}
 
   wrap-ansi@7.0.0:
-    resolution: {integrity: sha1-Z+FFz/UQpqaYS98RUpEdadLrnkM=}
+    resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
     engines: {node: '>=10'}
 
   wrap-ansi@8.1.0:
@@ -6102,6 +6127,8 @@ snapshots:
       slice-ansi: 7.1.0
       strip-ansi: 7.1.0
       wrap-ansi: 9.0.0
+
+  lottie-web@5.12.2: {}
 
   lower-case@2.0.2:
     dependencies:
