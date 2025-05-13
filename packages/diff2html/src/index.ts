@@ -42,7 +42,7 @@ export class GemBindDiff2htmlElement extends GemElement {
 
   @effect((i) => [i.mdStyle])
   #update = () => {
-    const sheets = [style].concat( this.shadowRoot!.adoptedStyleSheets);
+    const sheets = [style].concat(this.shadowRoot!.adoptedStyleSheets);
     this.shadowRoot!.adoptedStyleSheets = sheets.concat(this.mdStyle || []);
     return () => (this.shadowRoot!.adoptedStyleSheets = sheets);
   };

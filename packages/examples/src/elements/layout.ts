@@ -11,7 +11,7 @@ import './nav';
 export class Layout extends GemElement {
   render() {
     return html`
-      <gem-title suffix=" - Gem Examples" hidden>${location.pathname}</gem-title>
+      <gem-title suffix=" - Gem Bind Examples" hidden>${location.pathname}</gem-title>
       <gem-reflect>
         <style>
           body {

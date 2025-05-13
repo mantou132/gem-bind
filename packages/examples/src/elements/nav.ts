@@ -64,7 +64,7 @@ export class Nav extends GemElement {
         }
       </style>
       <a class="header" href="https://github.com/mantou132/gem" target="_blank">
-        <div class="title">Gem Examples</div>
+        <div class="title">Gem Bind Examples</div>
         <div class="version">version: ${VERSION}</div>
       </a>
       <ol>
