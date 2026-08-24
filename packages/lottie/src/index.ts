@@ -5,7 +5,12 @@ import './types';
 
 export * from 'lottie-web';
 
-const style = css``;
+const style = css`
+  div {
+    width: 100%;
+    height: 100%;
+  }
+`;
 
 @customElement('gem-bind-lottie')
 @adoptedStyle(style)
@@ -20,6 +25,9 @@ export class GemBindLottieElement extends GemElement {
   @boolattribute subframe: boolean;
 
   #animate: AnimationItem | null = null;
+  #containerRef = createRef<HTMLDivElement>();
+
+  render = () => html`<div ${this.#containerRef}></div>`;
 
   @effect((i) => [i.src])
   #reset = () => {
@@ -28,7 +36,7 @@ export class GemBindLottieElement extends GemElement {
       return;
     }
     this.#animate = lottie.loadAnimation({
-      container: this.shadowRoot as any,
+      container: this.#containerRef.value!,
       renderer: 'svg',
       path: this.src,
     });

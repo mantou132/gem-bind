@@ -11,6 +11,7 @@ const examples = (fs.readdirSync('src') as string[]).filter(
 
 export default defineConfig({
   build: {
+    target: 'es2022',
     emptyOutDir: true,
     sourcemap: true,
   },
