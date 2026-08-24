@@ -4,20 +4,21 @@
   "version": "2.2.0",
   "description": "gem bind examples",
   "scripts": {
-    "build": "vite build",
-    "preview": "vite preview",
-    "start": "vite serve"
+    "build": "cross-env NODE_OPTIONS=--conditions=development rsbuild build",
+    "preview": "cross-env NODE_OPTIONS=--conditions=development rsbuild preview",
+    "start": "cross-env NODE_OPTIONS=--conditions=development rsbuild dev"
   },
   "dependencies": {
-    "@gem-bind/diff2html": "^0.0.1",
+    "@gem-bind/diff2html": "^0.0.2",
     "@gem-bind/lottie": "^0.0.1",
-    "@gem-bind/marked": "^0.0.1",
-    "@mantou/gem": "^2.2.1"
+    "@gem-bind/marked": "^0.0.2",
+    "@mantou/gem": "^2.2.8"
   },
   "devDependencies": {
     "@gem-bind/config": "^2.1.0",
+    "@rsbuild/core": "2.0.15",
+    "cross-env": "^10.0.0",
     "marked": "^15",
-    "vite": "^5.2.10",
-    "vite-plugin-virtual-mpa": "^1.9.3"
+    "unplugin-gem": "^0.1.5"
   }
 }
