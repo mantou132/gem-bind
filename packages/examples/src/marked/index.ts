@@ -7,9 +7,6 @@ import '../elements/layout';
 const style = new CSSStyleSheet();
 style.replaceSync('h1 { color: red; }');
 
-const escapeHTML = (text: string) =>
-  text.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
-
 const extensions: MarkedExtension[] = [
   {
     renderer: {
@@ -19,7 +16,7 @@ const extensions: MarkedExtension[] = [
         return `<a href="${token.href}" target="_blank" rel="noopener">${text}</a>`;
       },
       code({ text, lang }) {
-        return `<pre><code class="language-${lang ?? ''}">${escapeHTML(text)}</code></pre>`;
+        return `<pre><code class="language-${lang ?? ''}">${text}</code></pre>`;
       },
     },
   },

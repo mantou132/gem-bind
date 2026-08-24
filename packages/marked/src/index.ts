@@ -44,6 +44,6 @@ export class GemBindMarkedElement extends GemElement {
 
   @effect()
   #render = async () => {
-    this.shadowRoot!.innerHTML = await this.#marked.parse(this.innerHTML);
+    this.shadowRoot!.innerHTML = await this.#marked.parse(this.textContent || '');
   };
 }
