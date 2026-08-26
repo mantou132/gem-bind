@@ -1,7 +1,19 @@
+import type { TemplateResult } from '@mantou/gem';
 import { blockContainer } from 'duoyun-ui/lib/styles';
 import { Marked, type MarkedExtension } from 'marked';
 
 import './types';
+
+// Marked has already produced HTML, so use it as a static Gem template.
+const templateCache = new Map<string, TemplateResult>();
+const template = (content: string) => {
+  let result = templateCache.get(content);
+  if (!result) {
+    result = html([content] as unknown as TemplateStringsArray);
+    templateCache.set(content, result);
+  }
+  return result;
+};
 
 const style = css``;
 
@@ -18,12 +30,14 @@ export class GemBindMarkedElement extends GemElement {
    */
   @property extensions?: MarkedExtension[];
 
-  #ob = new MutationObserver(() => this.#render());
+  #ob = new MutationObserver(() => this.update());
   #marked = new Marked();
+  #htmlCache = new Map<string, string>();
 
   @mounted()
   #mounted = () => {
     this.#ob.observe(this, { characterData: true, childList: true, subtree: true });
+    return () => this.#ob.disconnect();
   };
 
   @effect((i) => [i.mdStyle])
@@ -34,16 +48,25 @@ export class GemBindMarkedElement extends GemElement {
     return () => (this.shadowRoot!.adoptedStyleSheets = sheets);
   };
 
-  // recreate the parser so extensions don't accumulate between updates;
-  // the following `#render` re-runs after this because it has no dep getter
-  @effect((i) => [i.extensions])
+  // recreate the parser so extensions don't accumulate between updates
+  @memo((i) => [i.extensions])
   #updateParser = () => {
     this.#marked = new Marked();
     if (this.extensions) this.#marked.use(...this.extensions);
+    this.#htmlCache.clear();
   };
 
-  @effect()
-  #render = async () => {
-    this.shadowRoot!.innerHTML = await this.#marked.parse(this.textContent || '');
+  render = () => {
+    const tokens = this.#marked.lexer(this.textContent || '');
+    const next: TemplateResult[] = [];
+    for (const token of tokens) {
+      let content = this.#htmlCache.get(token.raw);
+      if (content === undefined) {
+        content = this.#marked.parser([token]);
+        this.#htmlCache.set(token.raw, content);
+      }
+      next.push(template(content));
+    }
+    return html`${next}`;
   };
 }

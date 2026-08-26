@@ -84,7 +84,7 @@ importers:
         specifier: ^0.0.1
         version: link:../lottie
       '@gem-bind/marked':
-        specifier: ^0.0.2
+        specifier: ^0.0.3
         version: link:../marked
       '@mantou/gem':
         specifier: ^2.2.8
