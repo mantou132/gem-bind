@@ -1,0 +1,6 @@
+{
+  "order": 20,
+  "name": "flow",
+  "group": "Visualizations",
+  "desc": "ELK-powered directed graph"
+}

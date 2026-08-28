@@ -1,0 +1,6 @@
+{
+  "order": 10,
+  "name": "map",
+  "group": "Visualizations",
+  "desc": "Interactive geographic map"
+}

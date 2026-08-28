@@ -9,6 +9,8 @@
 | [`@gem-bind/marked`](./packages/marked) | `<gem-bind-marked>` | [marked](https://marked.js.org/) — 渲染 Markdown |
 | [`@gem-bind/lottie`](./packages/lottie) | `<gem-bind-lottie>` | [lottie-web](https://github.com/airbnb/lottie-web) — 播放 Lottie 动画 |
 | [`@gem-bind/diff2html`](./packages/diff2html) | `<gem-bind-diff2html>` | [diff2html](https://diff2html.xyz/) — 渲染 diff |
+| [`@gem-bind/map`](./packages/map) | `<gem-bind-map>` | [d3-geo](https://d3js.org/d3-geo) — 渲染交互式地图 |
+| [`@gem-bind/flow`](./packages/flow) | `<gem-bind-flow>` | [ELK](https://www.eclipse.org/elk/) — 自动布局有向图 |
 
 ## 使用
 

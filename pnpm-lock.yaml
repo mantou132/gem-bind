@@ -80,9 +80,15 @@ importers:
       '@gem-bind/diff2html':
         specifier: ^0.0.2
         version: link:../diff2html
+      '@gem-bind/flow':
+        specifier: ^0.0.1
+        version: link:../flow
       '@gem-bind/lottie':
         specifier: ^0.0.1
         version: link:../lottie
+      '@gem-bind/map':
+        specifier: ^0.0.1
+        version: link:../map
       '@gem-bind/marked':
         specifier: ^0.0.3
         version: link:../marked
@@ -106,6 +112,25 @@ importers:
         specifier: ^0.1.5
         version: 0.1.5(@mantou/gem@2.2.8)(@rspack/core@2.1.10(@swc/helpers@0.5.23))
 
+  packages/flow:
+    dependencies:
+      '@mantou/gem':
+        specifier: ^2.2.8
+        version: 2.2.8
+      '@swc/helpers':
+        specifier: ^0.5.23
+        version: 0.5.23
+      duoyun-ui:
+        specifier: ^2.2.3
+        version: 2.2.3(@mantou/gem@2.2.8)
+      elkjs:
+        specifier: ^0.7.1
+        version: 0.7.1
+    devDependencies:
+      '@gem-bind/config':
+        specifier: ^2.1.0
+        version: link:../config
+
   packages/lottie:
     dependencies:
       '@mantou/gem':
@@ -124,6 +149,28 @@ importers:
       '@gem-bind/config':
         specifier: ^2.1.0
         version: link:../config
+
+  packages/map:
+    dependencies:
+      '@mantou/gem':
+        specifier: ^2.2.8
+        version: 2.2.8
+      '@swc/helpers':
+        specifier: ^0.5.23
+        version: 0.5.23
+      d3-geo:
+        specifier: ^3.0.1
+        version: 3.1.1
+      duoyun-ui:
+        specifier: ^2.2.3
+        version: 2.2.3(@mantou/gem@2.2.8)
+    devDependencies:
+      '@gem-bind/config':
+        specifier: ^2.1.0
+        version: link:../config
+      '@types/d3-geo':
+        specifier: ^3.0.1
+        version: 3.1.1
 
   packages/marked:
     dependencies:
@@ -916,6 +963,12 @@ packages:
 
   '@tybys/wasm-util@0.9.0':
     resolution: {integrity: sha512-6+7nlbMVX/PVDCwaIQ8nTOPveOcFLSt8GcXdx8hD0bt39uWxYT88uXzqTd4fTvqta7oeUJqudepapKNt2DYJFw==}
+
+  '@types/d3-geo@3.1.1':
+    resolution: {integrity: sha512-65Emv9fQiQQqphLlRkuQ5ypPsOmWPhtBGCMv61JDPEPMvsx+gzhGf74yw1a78xFKPj6zw4AgQICJoQv0vK9M2w==}
+
+  '@types/geojson@7946.0.16':
+    resolution: {integrity: sha512-6C8nqWur3j98U6+lXDfTUWIfgvZU+EumvpHKcYjujKH7woYyLj2sUmff0tRhrqM7BohUw7Pz3ZB1jj2gW9Fvmg==}
 
   '@types/http-cache-semantics@4.2.0':
     resolution: {integrity: sha512-L3LgimLHXtGkWikKnsPg0/VFx9OGZaC+eN1u4r+OB1XRqH3meBIAVC2zr1WdMH+RHmnRkqliQAOHNJ/E0j/e0Q==}
@@ -4247,6 +4300,12 @@ snapshots:
   '@tybys/wasm-util@0.9.0':
     dependencies:
       tslib: 2.8.1
+
+  '@types/d3-geo@3.1.1':
+    dependencies:
+      '@types/geojson': 7946.0.16
+
+  '@types/geojson@7946.0.16': {}
 
   '@types/http-cache-semantics@4.2.0': {}
 

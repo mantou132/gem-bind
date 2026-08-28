@@ -9,6 +9,8 @@
 | [`@gem-bind/marked`](./packages/marked) | `<gem-bind-marked>` | [marked](https://marked.js.org/) — render markdown |
 | [`@gem-bind/lottie`](./packages/lottie) | `<gem-bind-lottie>` | [lottie-web](https://github.com/airbnb/lottie-web) — play Lottie animations |
 | [`@gem-bind/diff2html`](./packages/diff2html) | `<gem-bind-diff2html>` | [diff2html](https://diff2html.xyz/) — render unified diffs |
+| [`@gem-bind/map`](./packages/map) | `<gem-bind-map>` | [d3-geo](https://d3js.org/d3-geo) — render interactive maps |
+| [`@gem-bind/flow`](./packages/flow) | `<gem-bind-flow>` | [ELK](https://www.eclipse.org/elk/) — lay out directed graphs |
 
 ## Usage
 
