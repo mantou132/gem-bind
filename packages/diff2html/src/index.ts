@@ -9,6 +9,9 @@ import { mergeStreams, nodeStream } from './helpers';
 
 import './types';
 
+export * from 'diff2html';
+export * from 'highlight.js';
+
 const DIFF_CSS = 'https://cdn.jsdelivr.net/npm/diff2html/bundles/css/diff2html.min.css';
 const hljsCssUrl = (dark: boolean) =>
   `https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github${dark ? '-dark' : ''}.min.css`;

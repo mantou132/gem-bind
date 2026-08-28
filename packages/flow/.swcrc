@@ -10,7 +10,15 @@
       "plugins": [
         [
           "swc-plugin-gem",
-          {}
+          {
+            "autoImport": {
+              "extends": "gem",
+              "members": {
+                "@mantou/gem/helper/theme": ["createDecoratorTheme"]
+              }
+            },
+            "autoImportDts": "src/types.ts"
+          }
         ]
       ]
     }

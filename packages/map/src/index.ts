@@ -1,7 +1,4 @@
 import type { Emitter } from '@mantou/gem/lib/decorators';
-import { adoptedStyle, aria, customElement, emitter, memo, part, property, state } from '@mantou/gem/lib/decorators';
-import { createState, css, html, svg } from '@mantou/gem/lib/element';
-import { classMap, styleMap } from '@mantou/gem/lib/utils';
 import type { GeoRawProjection } from 'd3-geo';
 import { geoEquirectangularRaw, geoMercatorRaw, geoPath, geoProjection } from 'd3-geo';
 import { DuoyunLoadableBaseElement } from 'duoyun-ui/elements/base/loadable';
@@ -10,6 +7,7 @@ import { theme } from 'duoyun-ui/lib/theme';
 
 import 'duoyun-ui/elements/gesture';
 
+export * from 'd3-geo';
 export type { PanEventDetail } from 'duoyun-ui/elements/gesture';
 
 // https://github.com/d3/d3-geo/blob/main/src/projection/equirectangular.js

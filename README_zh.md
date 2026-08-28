@@ -11,6 +11,8 @@
 | [`@gem-bind/diff2html`](./packages/diff2html) | `<gem-bind-diff2html>` | [diff2html](https://diff2html.xyz/) — 渲染 diff |
 | [`@gem-bind/map`](./packages/map) | `<gem-bind-map>` | [d3-geo](https://d3js.org/d3-geo) — 渲染交互式地图 |
 | [`@gem-bind/flow`](./packages/flow) | `<gem-bind-flow>` | [ELK](https://www.eclipse.org/elk/) — 自动布局有向图 |
+| [`@gem-bind/mermaid`](./packages/mermaid) | `<gem-bind-mermaid>` | [Mermaid](https://mermaid.js.org/) — 渲染文本图表 |
+| [`@gem-bind/latex`](./packages/latex) | `<gem-bind-latex>` | [KaTeX](https://katex.org/) — 渲染 LaTeX 数学公式 |
 
 ## 使用
 

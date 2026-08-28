@@ -1,0 +1,6 @@
+{
+  "order": 30,
+  "name": "mermaid",
+  "group": "Visualizations",
+  "desc": "Text-based Mermaid diagrams"
+}

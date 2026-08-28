@@ -1,10 +1,11 @@
 {
-  "name": "@gem-bind/marked",
-  "version": "0.0.4",
-  "description": "marked gem element",
+  "name": "@gem-bind/mermaid",
+  "version": "0.0.1",
+  "description": "Mermaid diagram Gem element",
   "keywords": [
     "gem",
-    "marked"
+    "mermaid",
+    "diagram"
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,16 +13,16 @@
     "dist"
   ],
   "scripts": {
-    "build": "swc --strip-leading-paths src --out-dir ./dist",
+    "build": "pnpm build:type && swc --strip-leading-paths src --out-dir ./dist",
     "build:type": "tsc --emitDeclarationOnly --outDir ./dist",
-    "start": "concurrently \"pnpm build --watch\" \"pnpm build:type --watch\"",
-    "prepublishOnly": "pnpm build:type && pnpm build"
+    "start": "concurrently \"swc --strip-leading-paths src --out-dir ./dist --watch\" \"pnpm build:type --watch\"",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "@mantou/gem": "^2.2.8",
     "@swc/helpers": "^0.5.23",
     "duoyun-ui": "^2.2.3",
-    "marked": "^15.0.7"
+    "mermaid": "^11.17.2"
   },
   "devDependencies": {
     "@gem-bind/config": "^2.1.0"
@@ -31,7 +32,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mantou132/gem-bind.git",
-    "directory": "packages/marked"
+    "directory": "packages/mermaid"
   },
   "bugs": {
     "url": "https://github.com/mantou132/gem-bind/issues"

@@ -1,0 +1,6 @@
+{
+  "order": 40,
+  "name": "latex",
+  "group": "Visualizations",
+  "desc": "KaTeX-powered LaTeX math"
+}

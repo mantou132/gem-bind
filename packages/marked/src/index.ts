@@ -4,6 +4,8 @@ import { Marked, type MarkedExtension } from 'marked';
 
 import './types';
 
+export * from 'marked';
+
 // Marked has already produced HTML, so use it as a static Gem template.
 const templateCache = new Map<string, TemplateResult>();
 const template = (content: string) => {

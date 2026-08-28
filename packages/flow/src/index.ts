@@ -1,19 +1,19 @@
 // WebKit marker arrow bug: https://github.com/mantou132/gem-bind/tree/main/packages/flow
 // WebKit marker arrow bug: https://github.com/mantou132/gem-bind/tree/main/packages/flow
+// WebKit marker arrow bug: https://github.com/mantou132/gem-bind/tree/main/packages/flow
+// WebKit marker arrow bug: https://github.com/mantou132/gem-bind/tree/main/packages/flow
 
-import { createDecoratorTheme } from '@mantou/gem/helper/theme';
-import { adoptedStyle, customElement, effect, memo, part, property, shadow, state } from '@mantou/gem/lib/decorators';
 import type { TemplateResult } from '@mantou/gem/lib/element';
-import { createRef, createState, css, html, svg } from '@mantou/gem/lib/element';
-import { styleMap } from '@mantou/gem/lib/utils';
 import { DuoyunResizeBaseElement } from 'duoyun-ui/elements/base/resize';
 import { utf8ToB64 } from 'duoyun-ui/lib/encode';
 import { formatToPrecision } from 'duoyun-ui/lib/number';
 import { theme } from 'duoyun-ui/lib/theme';
 import type { Modify } from 'duoyun-ui/lib/types';
 import { isNotNullish, isNullish } from 'duoyun-ui/lib/types';
+import ELK from 'elkjs';
 import type { ElkEdgeSection, ElkExtendedEdge, ElkNode, ElkPoint, ElkShape, LayoutOptions } from 'elkjs';
-import ELK from 'elkjs/lib/elk.bundled.js';
+
+export * from 'elkjs';
 
 const elk = new ELK();
 
@@ -551,9 +551,14 @@ export class GemBindFlowElement extends DuoyunResizeBaseElement {
     if (!graph) return;
     const setLabels = (e: Node | Edge) => {
       if (e.label) e.labels = [{ id: '', text: e.label }];
-      if ('children' in e) e.children?.forEach((n) => setLabels(n));
+      if ('children' in e)
+        e.children?.forEach((n) => {
+          setLabels(n);
+        });
     };
-    graph.children?.forEach((e) => setLabels(e));
+    graph.children?.forEach((e) => {
+      setLabels(e);
+    });
     graph.edges?.forEach((e) => {
       setLabels(e);
       if (isNotNullish(e.source)) e.sources = [e.source];
