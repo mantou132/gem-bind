@@ -93,7 +93,7 @@ importers:
         specifier: ^0.0.1
         version: link:../map
       '@gem-bind/marked':
-        specifier: ^0.0.4
+        specifier: ^0.0.5
         version: link:../marked
       '@gem-bind/mermaid':
         specifier: ^0.0.1

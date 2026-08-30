@@ -11,6 +11,16 @@ Render markdown with a `<gem-bind-marked>` web component, powered by [marked](ht
 
 Content is re-rendered automatically when the light DOM changes.
 
+## Streaming
+
+Use the `streaming` attribute while appending Markdown. Newly rendered text fades in, and active fades keep their progress when the growing Markdown token is re-rendered:
+
+```html
+<gem-bind-marked streaming streaming-duration="600">Generating **an answer</gem-bind-marked>
+```
+
+`streaming-duration` configures the fade duration in milliseconds and defaults to `400`. The animation respects `prefers-reduced-motion`.
+
 ## Custom rendering
 
 Pass [marked extensions](https://marked.js.org/using_pro#extensions) via the `extensions` property to customize how links, code blocks, etc. are rendered:
