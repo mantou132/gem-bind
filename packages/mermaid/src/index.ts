@@ -118,6 +118,50 @@ const getViewBox = (svg?: SVGSVGElement): ViewBox | undefined => {
   return { x: viewBox.x, y: viewBox.y, width: viewBox.width, height: viewBox.height };
 };
 
+export const repairMermaidSource = (source: string) => {
+  return source
+    .split('\n')
+    .map((line) => {
+      if (line.trim().startsWith('%%')) return line;
+
+      const arrowRegex = /([-=.~<>ox]+\|)/g;
+      let match: RegExpExecArray | null;
+      const arrowIndices: Array<{ index: number; length: number; arrow: string }> = [];
+      while ((match = arrowRegex.exec(line)) !== null) {
+        arrowIndices.push({ index: match.index, length: match[0].length, arrow: match[0] });
+      }
+      if (arrowIndices.length === 0) return line;
+
+      let result = '';
+      let lastEnd = 0;
+      for (let i = 0; i < arrowIndices.length; i++) {
+        const current = arrowIndices[i];
+        result += line.slice(lastEnd, current.index);
+        const nextArrowIndex = i + 1 < arrowIndices.length ? arrowIndices[i + 1].index : line.length;
+        const segment = line.slice(current.index + current.length, nextArrowIndex);
+
+        const lastPipeIndex = segment.lastIndexOf('|');
+        if (lastPipeIndex !== -1) {
+          const rawLabel = segment.slice(0, lastPipeIndex);
+          const target = segment.slice(lastPipeIndex + 1);
+          const trimmedLabel = rawLabel.trim();
+          if (trimmedLabel.startsWith('"') && trimmedLabel.endsWith('"')) {
+            result += current.arrow + rawLabel + '|' + target;
+          } else {
+            const escaped = trimmedLabel.replace(/(?<!\\)"/g, '\\"');
+            result += `${current.arrow}"${escaped}"|${target}`;
+          }
+        } else {
+          result += current.arrow + segment;
+        }
+        lastEnd = nextArrowIndex;
+      }
+      result += line.slice(lastEnd);
+      return result;
+    })
+    .join('\n');
+};
+
 /** Renders the element's text content as an interactive Mermaid diagram. */
 @customElement('gem-bind-mermaid')
 @adoptedStyle(style)
@@ -250,7 +294,15 @@ export class GemBindMermaidElement extends GemElement {
         fontFamily: 'ui-sans-serif, system-ui, sans-serif',
         ...config,
       });
-      const { svg, bindFunctions } = await mermaid.render(`gem-bind-mermaid-${++diagramId}`, source);
+      let renderResult: { svg: string; bindFunctions?: (element: Element) => void };
+      try {
+        renderResult = await mermaid.render(`gem-bind-mermaid-${++diagramId}`, source);
+      } catch (err) {
+        const repaired = repairMermaidSource(source);
+        if (repaired === source) throw err;
+        renderResult = await mermaid.render(`gem-bind-mermaid-${++diagramId}`, repaired);
+      }
+      const { svg, bindFunctions } = renderResult;
       if (sequence !== this.#renderSequence) return;
       const svgElement = parseSvg(svg);
       this.#svg = svgElement;
@@ -268,7 +320,7 @@ export class GemBindMermaidElement extends GemElement {
   #generateSvg = () => {
     this.#svg = undefined;
     this.#initialViewBox = undefined;
-    const source = this.textContent.trim();
+    const source = this.textContent?.trim() || '';
     const sequence = ++this.#renderSequence;
     this.loading = Boolean(source);
     this.#state({ source, svg: undefined, bindFunctions: undefined });
@@ -281,7 +333,7 @@ export class GemBindMermaidElement extends GemElement {
   @effect()
   #bindMermaid = () => {
     const { source, svg, bindFunctions } = this.#state;
-    if (!svg || source !== this.textContent.trim()) return;
+    if (!svg || source !== this.textContent?.trim()) return;
 
     const gesture = this.#gestureRef.value;
     if (!gesture) return;
@@ -289,7 +341,7 @@ export class GemBindMermaidElement extends GemElement {
   };
 
   render = () => {
-    const svg = this.#state.source === this.textContent.trim() ? this.#state.svg : undefined;
+    const svg = this.#state.source === this.textContent?.trim() ? this.#state.svg : undefined;
 
     return html`
       <dy-gesture ${this.#gestureRef} @pan=${this.#onPan} @pinch=${this.#onPinch}>${svg}</dy-gesture>
