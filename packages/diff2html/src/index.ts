@@ -49,6 +49,44 @@ const loadHljs = () => (hljsLoading ??= import('highlight.js/lib/common').then((
 const style = css`
   :host {
     position: relative;
+
+    .d2h-code-linenumber,
+    .d2h-file-side-diff:first-child .d2h-code-side-linenumber {
+      border-left: none;
+    }
+
+    .d2h-dark-color-scheme {
+      .d2h-code-linenumber,
+      .d2h-code-side-linenumber {
+        background-color: var(--d2h-dark-bg-color);
+
+        &.d2h-ins {
+          background: linear-gradient(var(--d2h-dark-ins-bg-color), var(--d2h-dark-ins-bg-color)) var(--d2h-dark-bg-color);
+
+          &.d2h-change {
+            background: linear-gradient(var(--d2h-dark-change-ins-color), var(--d2h-dark-change-ins-color)) var(--d2h-dark-bg-color);
+          }
+        }
+
+        &.d2h-del {
+          background: linear-gradient(var(--d2h-dark-del-bg-color), var(--d2h-dark-del-bg-color)) var(--d2h-dark-bg-color);
+
+          &.d2h-change {
+            background: linear-gradient(var(--d2h-dark-change-del-color), var(--d2h-dark-change-del-color)) var(--d2h-dark-bg-color);
+          }
+        }
+
+        &.d2h-info {
+          background: linear-gradient(var(--d2h-dark-info-bg-color), var(--d2h-dark-info-bg-color)) var(--d2h-dark-bg-color);
+        }
+
+        &.d2h-emptyplaceholder,
+        &.d2h-code-side-emptyplaceholder {
+          background: linear-gradient(var(--d2h-dark-empty-placeholder-bg-color), var(--d2h-dark-empty-placeholder-bg-color)) var(--d2h-dark-bg-color);
+        }
+      }
+    }
+
   }
 `;
 
