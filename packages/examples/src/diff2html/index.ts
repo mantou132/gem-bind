@@ -9,7 +9,9 @@ const strInput =
 render(
   html`
     <gem-examples-layout>
-      <gem-bind-diff2html color-scheme="dark">${strInput}</gem-bind-diff2html>
+      <div>
+        <gem-bind-diff2html color-scheme="dark">${strInput}</gem-bind-diff2html>
+      </div>
     </gem-examples-layout>
   `,
   document.body,

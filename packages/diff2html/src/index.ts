@@ -47,12 +47,38 @@ const loadHljs = () => (hljsLoading ??= import('highlight.js/lib/common').then((
 // crosses the shadow boundary, so an outer positioned ancestor outside the
 // embedder's scroll container would capture them and freeze them on scroll
 const style = css`
+  :host([color-scheme=dark]) {
+    border: 1px solid var(--d2h-dark-border-color);
+  }
+
   :host {
+    border: 1px solid var(--d2h-border-color);
+
     position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
 
     .d2h-code-linenumber,
     .d2h-file-side-diff:first-child .d2h-code-side-linenumber {
       border-left: none;
+    }
+
+    .d2h-wrapper .d2h-file-wrapper {
+      margin-bottom: 0;
+      border: none;
+    }
+
+    .d2h-file-name-wrapper {
+      flex-wrap: nowrap;
+    }
+
+    .d2h-file-name {
+      min-width: 0;
+    }
+
+    .d2h-tag {
+      flex-shrink: 0;
+      white-space: nowrap;
     }
 
     .d2h-dark-color-scheme {
@@ -80,13 +106,28 @@ const style = css`
           background: linear-gradient(var(--d2h-dark-info-bg-color), var(--d2h-dark-info-bg-color)) var(--d2h-dark-bg-color);
         }
 
-        &.d2h-emptyplaceholder,
-        &.d2h-code-side-emptyplaceholder {
+        &.d2h-emptyplaceholder {
           background: linear-gradient(var(--d2h-dark-empty-placeholder-bg-color), var(--d2h-dark-empty-placeholder-bg-color)) var(--d2h-dark-bg-color);
         }
       }
     }
+  }
 
+
+  :host([no-header]) {
+    .d2h-file-header {
+      display: none;
+    }
+  }
+
+  :host([compact-line-numbers]) {
+    .d2h-code-linenumber {
+      width: 3.75em;
+    }
+
+    .d2h-code-line {
+      padding-inline: 4.5em;
+    }
   }
 `;
 
@@ -113,6 +154,11 @@ export class GemBindDiff2htmlElement extends GemElement {
 
   /** disable code highlighting, also skip loading highlight.js and its theme styles */
   @boolattribute noHighlight: boolean;
+
+  /** hide diff file header */
+  @boolattribute noHeader: boolean;
+
+  @boolattribute compactLineNumbers: boolean;
 
   @property mdStyle?: CSSStyleSheet;
 

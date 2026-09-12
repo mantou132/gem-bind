@@ -78,7 +78,7 @@ importers:
   packages/examples:
     dependencies:
       '@gem-bind/diff2html':
-        specifier: ^0.0.2
+        specifier: ^0.0.3
         version: link:../diff2html
       '@gem-bind/flow':
         specifier: ^0.0.1

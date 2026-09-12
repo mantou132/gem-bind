@@ -9,7 +9,7 @@
     "start": "cross-env NODE_OPTIONS=--conditions=development rsbuild dev"
   },
   "dependencies": {
-    "@gem-bind/diff2html": "^0.0.2",
+    "@gem-bind/diff2html": "^0.0.3",
     "@gem-bind/flow": "^0.0.1",
     "@gem-bind/latex": "^0.0.1",
     "@gem-bind/lottie": "^0.0.1",
