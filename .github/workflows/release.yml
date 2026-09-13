@@ -31,7 +31,9 @@ jobs:
         with:
           node-version: 22.x
           cache: pnpm
-          registry-url: 'https://registry.npmjs.org'
+
+      - name: Ensure latest npm for OIDC
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
