@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "examples",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "gem bind examples",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--conditions=development rsbuild build",
@@ -9,17 +9,17 @@
     "start": "cross-env NODE_OPTIONS=--conditions=development rsbuild dev"
   },
   "dependencies": {
-    "@gem-bind/diff2html": "^0.0.3",
-    "@gem-bind/flow": "^0.0.1",
-    "@gem-bind/latex": "^0.0.1",
-    "@gem-bind/lottie": "^0.0.1",
-    "@gem-bind/map": "^0.0.1",
-    "@gem-bind/marked": "^0.0.5",
-    "@gem-bind/mermaid": "^0.0.2",
+    "@gem-bind/diff2html": "^0.0.4",
+    "@gem-bind/flow": "^0.0.2",
+    "@gem-bind/latex": "^0.0.2",
+    "@gem-bind/lottie": "^0.0.2",
+    "@gem-bind/map": "^0.0.2",
+    "@gem-bind/marked": "^0.0.6",
+    "@gem-bind/mermaid": "^0.0.3",
     "@mantou/gem": "^2.2.8"
   },
   "devDependencies": {
-    "@gem-bind/config": "^2.1.0",
+    "@gem-bind/config": "^2.1.1",
     "@rsbuild/core": "2.0.15",
     "cross-env": "^10.0.0",
     "marked": "^15",

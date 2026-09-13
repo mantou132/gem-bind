@@ -1,6 +1,6 @@
 {
   "name": "@gem-bind/marked",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "marked gem element",
   "keywords": [
     "gem",
@@ -27,7 +27,7 @@
     "marked": "^15.0.7"
   },
   "devDependencies": {
-    "@gem-bind/config": "^2.1.0"
+    "@gem-bind/config": "^2.1.1"
   },
   "author": "mantou132",
   "license": "MIT",

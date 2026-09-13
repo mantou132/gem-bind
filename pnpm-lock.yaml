@@ -72,38 +72,38 @@ importers:
         version: 11.12.0
     devDependencies:
       '@gem-bind/config':
-        specifier: ^2.1.0
+        specifier: ^2.1.1
         version: link:../config
 
   packages/examples:
     dependencies:
       '@gem-bind/diff2html':
-        specifier: ^0.0.3
+        specifier: ^0.0.4
         version: link:../diff2html
       '@gem-bind/flow':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../flow
       '@gem-bind/latex':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../latex
       '@gem-bind/lottie':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../lottie
       '@gem-bind/map':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../map
       '@gem-bind/marked':
-        specifier: ^0.0.5
+        specifier: ^0.0.6
         version: link:../marked
       '@gem-bind/mermaid':
-        specifier: ^0.0.2
+        specifier: ^0.0.3
         version: link:../mermaid
       '@mantou/gem':
         specifier: ^2.2.8
         version: 2.2.8
     devDependencies:
       '@gem-bind/config':
-        specifier: ^2.1.0
+        specifier: ^2.1.1
         version: link:../config
       '@rsbuild/core':
         specifier: 2.0.15
@@ -134,7 +134,7 @@ importers:
         version: 0.7.1
     devDependencies:
       '@gem-bind/config':
-        specifier: ^2.1.0
+        specifier: ^2.1.1
         version: link:../config
 
   packages/latex:
@@ -153,7 +153,7 @@ importers:
         version: 0.18.4
     devDependencies:
       '@gem-bind/config':
-        specifier: ^2.1.0
+        specifier: ^2.1.1
         version: link:../config
 
   packages/lottie:
@@ -172,7 +172,7 @@ importers:
         version: 5.13.0
     devDependencies:
       '@gem-bind/config':
-        specifier: ^2.1.0
+        specifier: ^2.1.1
         version: link:../config
 
   packages/map:
@@ -191,7 +191,7 @@ importers:
         version: 2.2.3(@mantou/gem@2.2.8)
     devDependencies:
       '@gem-bind/config':
-        specifier: ^2.1.0
+        specifier: ^2.1.1
         version: link:../config
       '@types/d3-geo':
         specifier: ^3.0.1
@@ -213,7 +213,7 @@ importers:
         version: 15.0.12
     devDependencies:
       '@gem-bind/config':
-        specifier: ^2.1.0
+        specifier: ^2.1.1
         version: link:../config
 
   packages/mermaid:
@@ -232,7 +232,7 @@ importers:
         version: 11.17.2
     devDependencies:
       '@gem-bind/config':
-        specifier: ^2.1.0
+        specifier: ^2.1.1
         version: link:../config
 
 packages:
@@ -398,6 +398,7 @@ packages:
   '@mxyhi/tsgo@2025.4.16-12':
     resolution: {integrity: sha512-bil1IrObQLTIDR91dHa4HOjrOnIdwMv+bXXDV6kXTll+EjzG32eBXIHnpxqQdOcK6mEAuk2GhWp/5Q4ThksjTA==}
     engines: {node: '>=12'}
+    cpu: [x64, ia32, arm, arm64]
     os: [darwin, linux, win32, freebsd]
     hasBin: true
 

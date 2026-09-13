@@ -1,6 +1,6 @@
 {
   "name": "@gem-bind/diff2html",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "diff2html gem element",
   "keywords": [
     "gem",
@@ -28,7 +28,7 @@
     "highlight.js": "^11.9.0"
   },
   "devDependencies": {
-    "@gem-bind/config": "^2.1.0"
+    "@gem-bind/config": "^2.1.1"
   },
   "author": "mantou132",
   "license": "MIT",

@@ -1,6 +1,6 @@
 {
   "name": "@gem-bind/map",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Interactive map Gem element powered by d3-geo",
   "keywords": [
     "gem",
@@ -28,7 +28,7 @@
     "duoyun-ui": "^2.2.3"
   },
   "devDependencies": {
-    "@gem-bind/config": "^2.1.0",
+    "@gem-bind/config": "^2.1.1",
     "@types/d3-geo": "^3.0.1"
   },
   "author": "mantou132",

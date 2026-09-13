@@ -1,6 +1,6 @@
 {
   "name": "@gem-bind/latex",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "LaTeX Gem element powered by KaTeX",
   "keywords": [
     "gem",
@@ -29,7 +29,7 @@
     "katex": "^0.18.4"
   },
   "devDependencies": {
-    "@gem-bind/config": "^2.1.0"
+    "@gem-bind/config": "^2.1.1"
   },
   "author": "mantou132",
   "license": "MIT",

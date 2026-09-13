@@ -1,6 +1,6 @@
 {
   "name": "@gem-bind/mermaid",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Mermaid diagram Gem element",
   "keywords": [
     "gem",
@@ -28,7 +28,7 @@
     "mermaid": "^11.17.2"
   },
   "devDependencies": {
-    "@gem-bind/config": "^2.1.0"
+    "@gem-bind/config": "^2.1.1"
   },
   "author": "mantou132",
   "license": "MIT",

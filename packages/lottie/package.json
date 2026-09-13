@@ -1,6 +1,6 @@
 {
   "name": "@gem-bind/lottie",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "lottie gem element",
   "keywords": [
     "gem",
@@ -27,7 +27,7 @@
     "lottie-web": "^5.12.2"
   },
   "devDependencies": {
-    "@gem-bind/config": "^2.1.0"
+    "@gem-bind/config": "^2.1.1"
   },
   "author": "mantou132",
   "license": "MIT",
