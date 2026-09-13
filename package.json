@@ -4,9 +4,9 @@
   "version": "0.0.1",
   "scripts": {
     "lint": "biome check --write && lerna exec --ignore @gem-bind/config -- tsgo tsc --noEmit",
-    "test": "lerna exec --concurrency=1 --ignore @gem-bind/config -- pnpm test",
+    "test": "lerna exec --concurrency=1 --ignore @gem-bind/config -- pnpm --if-present test",
     "release": "lerna version",
-    "prepare:build": "lerna exec --ignore @gem-bind/config -- pnpm build",
+    "prepare:build": "lerna exec --ignore @gem-bind/config --ignore examples -- pnpm --if-present build:type && lerna exec --ignore @gem-bind/config -- pnpm build",
     "prepare": "husky install && pnpm prepare:build"
   },
   "devDependencies": {

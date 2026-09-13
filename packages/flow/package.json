@@ -12,6 +12,9 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "swc --strip-leading-paths src --out-dir ./dist",
     "build:type": "tsc --emitDeclarationOnly --outDir ./dist",
