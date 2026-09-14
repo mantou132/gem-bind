@@ -1,3 +1,4 @@
+import { DuoyunVisibleBaseElement } from 'duoyun-ui/elements/base/visible';
 import { theme } from 'duoyun-ui/lib/theme';
 import mermaid, { type MermaidConfig } from 'mermaid';
 
@@ -166,12 +167,15 @@ export const repairMermaidSource = (source: string) => {
 @customElement('gem-bind-mermaid')
 @adoptedStyle(style)
 @shadow()
-export class GemBindMermaidElement extends GemElement {
+export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
   /** Mermaid initialize options. */
   @property config?: MermaidConfig;
 
   /** Additional stylesheet adopted by the element's shadow root. */
   @property mdStyle?: CSSStyleSheet;
+
+  /** Disable zoom and reset controls. */
+  @boolattribute noControls: boolean;
 
   @state loading: boolean;
 
@@ -269,11 +273,13 @@ export class GemBindMermaidElement extends GemElement {
     this.#observer.observe(this, { characterData: true, childList: true, subtree: true });
     this.addEventListener('wheel', this.#onWheel, { passive: false });
     this.addEventListener('keydown', this.#onKeydown);
+    this.addEventListener('show', this.#generateSvg);
     return () => {
       this.#observer.disconnect();
       this.#renderSequence += 1;
       this.removeEventListener('wheel', this.#onWheel);
       this.removeEventListener('keydown', this.#onKeydown);
+      this.removeEventListener('show', this.#generateSvg);
     };
   };
 
@@ -318,6 +324,7 @@ export class GemBindMermaidElement extends GemElement {
 
   @effect((i) => [i.config])
   #generateSvg = () => {
+    if (!this.visible) return;
     this.#svg = undefined;
     this.#initialViewBox = undefined;
     const source = this.textContent?.trim() || '';
@@ -345,7 +352,7 @@ export class GemBindMermaidElement extends GemElement {
 
     return html`
       <dy-gesture ${this.#gestureRef} @pan=${this.#onPan} @pinch=${this.#onPinch}>${svg}</dy-gesture>
-      <div v-if=${svg} class="controls">
+      <div v-if=${!!svg && !this.noControls} class="controls">
         <button type="button" class="control" aria-label="Zoom out" title="Zoom out" @click=${this.#zoomOut}>
           −
         </button>

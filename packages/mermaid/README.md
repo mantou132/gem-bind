@@ -14,14 +14,15 @@ Render interactive diagrams from text with the `<gem-bind-mermaid>` web componen
 </gem-bind-mermaid>
 ```
 
-Changing the light-DOM text automatically renders the diagram again. The element has a default height of `300px`.
+Changing the light-DOM text automatically renders the diagram again. The element has a default height of `300px` and only renders when entering the viewport.
 
 ## Properties
 
-| Property  | Type             | Description                                      |
-| --------- | ---------------- | ------------------------------------------------ |
-| `config`  | `MermaidConfig`  | Mermaid initialize options                       |
-| `mdStyle` | `CSSStyleSheet`  | Additional stylesheet adopted by the shadow root |
+| Property     | Type            | Description                                      |
+| ------------ | --------------- | ------------------------------------------------ |
+| `config`     | `MermaidConfig` | Mermaid initialize options                       |
+| `mdStyle`    | `CSSStyleSheet` | Additional stylesheet adopted by the shadow root |
+| `noControls` | `boolean`       | Hide zoom and reset control buttons              |
 
 `startOnLoad` defaults to `false`, `securityLevel` to `strict`, and `suppressErrorRendering` to `true`. Values passed
 through `config` can override these defaults.
