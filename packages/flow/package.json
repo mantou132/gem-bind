@@ -21,14 +21,18 @@
     "start": "concurrently \"pnpm build --watch\" \"pnpm build:type --watch\"",
     "prepublishOnly": "pnpm build:type && pnpm build"
   },
+  "peerDependencies": {
+    "@mantou/gem": "^2.0.0",
+    "duoyun-ui": "^2.0.0"
+  },
   "dependencies": {
-    "@mantou/gem": "^2.2.8",
     "@swc/helpers": "^0.5.23",
-    "duoyun-ui": "^2.2.3",
     "elkjs": "^0.7.1"
   },
   "devDependencies": {
-    "@gem-bind/config": "^2.1.1"
+    "@gem-bind/config": "^2.1.1",
+    "@mantou/gem": "^2.2.11",
+    "duoyun-ui": "^2.2.13"
   },
   "author": "mantou132",
   "license": "MIT",

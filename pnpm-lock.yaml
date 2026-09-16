@@ -55,18 +55,12 @@ importers:
 
   packages/diff2html:
     dependencies:
-      '@mantou/gem':
-        specifier: ^2.2.8
-        version: 2.2.8
       '@swc/helpers':
         specifier: ^0.5.23
         version: 0.5.23
       diff2html:
         specifier: ^3.4.51
         version: 3.4.56
-      duoyun-ui:
-        specifier: ^2.2.3
-        version: 2.2.3(@mantou/gem@2.2.8)
       highlight.js:
         specifier: ^11.9.0
         version: 11.12.0
@@ -74,6 +68,12 @@ importers:
       '@gem-bind/config':
         specifier: ^2.1.1
         version: link:../config
+      '@mantou/gem':
+        specifier: ^2.2.11
+        version: 2.2.11
+      duoyun-ui:
+        specifier: ^2.2.13
+        version: 2.2.13(@mantou/gem@2.2.11)
 
   packages/examples:
     dependencies:
@@ -99,8 +99,11 @@ importers:
         specifier: ^0.0.3
         version: link:../mermaid
       '@mantou/gem':
-        specifier: ^2.2.8
-        version: 2.2.8
+        specifier: ^2.2.11
+        version: 2.2.11
+      duoyun-ui:
+        specifier: ^2.2.13
+        version: 2.2.13(@mantou/gem@2.2.11)
     devDependencies:
       '@gem-bind/config':
         specifier: ^2.1.1
@@ -116,19 +119,13 @@ importers:
         version: 15.0.12
       unplugin-gem:
         specifier: ^0.1.5
-        version: 0.1.5(@mantou/gem@2.2.8)(@rspack/core@2.1.10(@swc/helpers@0.5.23))
+        version: 0.1.5(@mantou/gem@2.2.11)(@rspack/core@2.1.10(@swc/helpers@0.5.23))
 
   packages/flow:
     dependencies:
-      '@mantou/gem':
-        specifier: ^2.2.8
-        version: 2.2.8
       '@swc/helpers':
         specifier: ^0.5.23
         version: 0.5.23
-      duoyun-ui:
-        specifier: ^2.2.3
-        version: 2.2.3(@mantou/gem@2.2.8)
       elkjs:
         specifier: ^0.7.1
         version: 0.7.1
@@ -136,18 +133,18 @@ importers:
       '@gem-bind/config':
         specifier: ^2.1.1
         version: link:../config
+      '@mantou/gem':
+        specifier: ^2.2.11
+        version: 2.2.11
+      duoyun-ui:
+        specifier: ^2.2.13
+        version: 2.2.13(@mantou/gem@2.2.11)
 
   packages/latex:
     dependencies:
-      '@mantou/gem':
-        specifier: ^2.2.8
-        version: 2.2.8
       '@swc/helpers':
         specifier: ^0.5.23
         version: 0.5.23
-      duoyun-ui:
-        specifier: ^2.2.3
-        version: 2.2.3(@mantou/gem@2.2.8)
       katex:
         specifier: ^0.18.4
         version: 0.18.4
@@ -155,18 +152,18 @@ importers:
       '@gem-bind/config':
         specifier: ^2.1.1
         version: link:../config
+      '@mantou/gem':
+        specifier: ^2.2.11
+        version: 2.2.11
+      duoyun-ui:
+        specifier: ^2.2.13
+        version: 2.2.13(@mantou/gem@2.2.11)
 
   packages/lottie:
     dependencies:
-      '@mantou/gem':
-        specifier: ^2.2.8
-        version: 2.2.8
       '@swc/helpers':
         specifier: ^0.5.23
         version: 0.5.23
-      duoyun-ui:
-        specifier: ^2.2.3
-        version: 2.2.3(@mantou/gem@2.2.8)
       lottie-web:
         specifier: ^5.12.2
         version: 5.13.0
@@ -174,40 +171,40 @@ importers:
       '@gem-bind/config':
         specifier: ^2.1.1
         version: link:../config
+      '@mantou/gem':
+        specifier: ^2.2.11
+        version: 2.2.11
+      duoyun-ui:
+        specifier: ^2.2.13
+        version: 2.2.13(@mantou/gem@2.2.11)
 
   packages/map:
     dependencies:
-      '@mantou/gem':
-        specifier: ^2.2.8
-        version: 2.2.8
       '@swc/helpers':
         specifier: ^0.5.23
         version: 0.5.23
       d3-geo:
         specifier: ^3.0.1
         version: 3.1.1
-      duoyun-ui:
-        specifier: ^2.2.3
-        version: 2.2.3(@mantou/gem@2.2.8)
     devDependencies:
       '@gem-bind/config':
         specifier: ^2.1.1
         version: link:../config
+      '@mantou/gem':
+        specifier: ^2.2.11
+        version: 2.2.11
       '@types/d3-geo':
         specifier: ^3.0.1
         version: 3.1.1
+      duoyun-ui:
+        specifier: ^2.2.13
+        version: 2.2.13(@mantou/gem@2.2.11)
 
   packages/marked:
     dependencies:
-      '@mantou/gem':
-        specifier: ^2.2.8
-        version: 2.2.8
       '@swc/helpers':
         specifier: ^0.5.23
         version: 0.5.23
-      duoyun-ui:
-        specifier: ^2.2.3
-        version: 2.2.3(@mantou/gem@2.2.8)
       marked:
         specifier: ^15.0.7
         version: 15.0.12
@@ -215,18 +212,18 @@ importers:
       '@gem-bind/config':
         specifier: ^2.1.1
         version: link:../config
+      '@mantou/gem':
+        specifier: ^2.2.11
+        version: 2.2.11
+      duoyun-ui:
+        specifier: ^2.2.13
+        version: 2.2.13(@mantou/gem@2.2.11)
 
   packages/mermaid:
     dependencies:
-      '@mantou/gem':
-        specifier: ^2.2.8
-        version: 2.2.8
       '@swc/helpers':
         specifier: ^0.5.23
         version: 0.5.23
-      duoyun-ui:
-        specifier: ^2.2.3
-        version: 2.2.3(@mantou/gem@2.2.8)
       mermaid:
         specifier: ^11.17.2
         version: 11.17.2
@@ -234,6 +231,12 @@ importers:
       '@gem-bind/config':
         specifier: ^2.1.1
         version: link:../config
+      '@mantou/gem':
+        specifier: ^2.2.11
+        version: 2.2.11
+      duoyun-ui:
+        specifier: ^2.2.13
+        version: 2.2.13(@mantou/gem@2.2.11)
 
 packages:
 
@@ -389,8 +392,13 @@ packages:
     engines: {node: '>=18.0.0'}
     deprecated: This package is an implementation detail of Lerna and is no longer published separately.
 
-  '@mantou/gem@2.2.8':
-    resolution: {integrity: sha512-hoNKfs17DNwjtKOc9TNkqTf255vhuhjBygjIybDoEzDBWyORfYorVD9TCanHttvSsvMQKqB8TIjShI6nVPkF5g==}
+  '@mantou/gem@2.2.11':
+    resolution: {integrity: sha512-0HtQVQIyUklXtE5MRW3elAxWTeUgrGgpeblVK2y0e+szs4uilYiXMQvweViPmBT6/9uiGPasx7KFz/fxI03MDA==}
+
+  '@mantou/tap-ui@0.1.10':
+    resolution: {integrity: sha512-KCa0xNUrBhTIuJdwwxKHuJZ5NxdZisuRmK7kyKoXDPnQ+3gFNYJe1Uy54354mCvCpbcP6YM1zWpMFmgalntIwQ==}
+    peerDependencies:
+      '@mantou/gem': ^2.x
 
   '@mermaid-js/parser@1.2.1':
     resolution: {integrity: sha512-n12NohV3mrUyUL2o93IgG/ifeW9FTyeJn3zDxkhwa8MJ9Fxg3HQMlA3RiGmD/3UnJvheztkjjQAjA2T4LmUcpw==}
@@ -398,7 +406,6 @@ packages:
   '@mxyhi/tsgo@2025.4.16-12':
     resolution: {integrity: sha512-bil1IrObQLTIDR91dHa4HOjrOnIdwMv+bXXDV6kXTll+EjzG32eBXIHnpxqQdOcK6mEAuk2GhWp/5Q4ThksjTA==}
     engines: {node: '>=12'}
-    cpu: [x64, ia32, arm, arm64]
     os: [darwin, linux, win32, freebsd]
     hasBin: true
 
@@ -1857,8 +1864,8 @@ packages:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
     engines: {node: '>= 0.4'}
 
-  duoyun-ui@2.2.3:
-    resolution: {integrity: sha512-GPzp9FBxw9GE2uxSECZI//UYOO0yvNGavzVabxre0umxc110KLZ/7da7RznMfAm7/qTX4y4qLD4x1QDzfcRAug==}
+  duoyun-ui@2.2.13:
+    resolution: {integrity: sha512-Jnwpj2PdDWa2B6Do7ka4ZxZNa6p9KxHkskjek4K3A9MEvGq/aK/XiGxx3ZTAtlLEGfZk7OqLo8ZSQ5gyqkIhtw==}
     peerDependencies:
       '@mantou/gem': ^2.x
 
@@ -4102,7 +4109,11 @@ snapshots:
       - supports-color
       - typescript
 
-  '@mantou/gem@2.2.8': {}
+  '@mantou/gem@2.2.11': {}
+
+  '@mantou/tap-ui@0.1.10(@mantou/gem@2.2.11)':
+    dependencies:
+      '@mantou/gem': 2.2.11
 
   '@mermaid-js/parser@1.2.1':
     dependencies:
@@ -5640,12 +5651,11 @@ snapshots:
       es-errors: 1.3.0
       gopd: 1.2.0
 
-  duoyun-ui@2.2.3(@mantou/gem@2.2.8):
+  duoyun-ui@2.2.13(@mantou/gem@2.2.11):
     dependencies:
-      '@mantou/gem': 2.2.8
-      d3-geo: 3.1.1
+      '@mantou/gem': 2.2.11
+      '@mantou/tap-ui': 0.1.10(@mantou/gem@2.2.11)
       deep-query-selector: 1.0.2
-      elkjs: 0.7.1
 
   eastasianwidth@0.2.0: {}
 
@@ -7600,14 +7610,14 @@ snapshots:
 
   universalify@2.0.1: {}
 
-  unplugin-gem@0.1.5(@mantou/gem@2.2.8)(@rspack/core@2.1.10(@swc/helpers@0.5.23)):
+  unplugin-gem@0.1.5(@mantou/gem@2.2.11)(@rspack/core@2.1.10(@swc/helpers@0.5.23)):
     dependencies:
       '@swc/core': 1.15.40(@swc/helpers@0.5.23)
       '@swc/helpers': 0.5.23
       swc-plugin-gem: 0.1.13
       unplugin: 3.3.0(@rspack/core@2.1.10(@swc/helpers@0.5.23))
     optionalDependencies:
-      '@mantou/gem': 2.2.8
+      '@mantou/gem': 2.2.11
       '@rspack/core': 2.1.10(@swc/helpers@0.5.23)
     transitivePeerDependencies:
       - '@farmfe/core'

@@ -16,7 +16,8 @@
     "@gem-bind/map": "^0.0.2",
     "@gem-bind/marked": "^0.0.6",
     "@gem-bind/mermaid": "^0.0.3",
-    "@mantou/gem": "^2.2.8"
+    "@mantou/gem": "^2.2.11",
+    "duoyun-ui": "^2.2.13"
   },
   "devDependencies": {
     "@gem-bind/config": "^2.1.1",

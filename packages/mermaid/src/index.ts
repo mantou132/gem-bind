@@ -314,8 +314,9 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
       this.#svg = svgElement;
       this.#initialViewBox = getViewBox(svgElement);
       this.#state({ source, svg: svgElement, bindFunctions });
-    } catch {
+    } catch (error) {
       if (sequence !== this.#renderSequence) return;
+      console.error('Mermaid render failed:', error);
       this.#state({ source, svg: undefined, bindFunctions: undefined });
     } finally {
       if (sequence === this.#renderSequence) this.loading = false;
@@ -351,7 +352,7 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
     const svg = this.#state.source === this.textContent?.trim() ? this.#state.svg : undefined;
 
     return html`
-      <dy-gesture ${this.#gestureRef} @pan=${this.#onPan} @pinch=${this.#onPinch}>${svg}</dy-gesture>
+      <dy-gesture ${this.#gestureRef} touch-action="pan-y" @pan=${this.#onPan} @pinch=${this.#onPinch}>${svg}</dy-gesture>
       <div v-if=${!!svg && !this.noControls} class="controls">
         <button type="button" class="control" aria-label="Zoom out" title="Zoom out" @click=${this.#zoomOut}>
           −
