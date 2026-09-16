@@ -1,6 +1,6 @@
 {
   "name": "@gem-bind/map",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Interactive map Gem element powered by d3-geo",
   "keywords": [
     "gem",

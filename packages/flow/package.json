@@ -1,6 +1,6 @@
 {
   "name": "@gem-bind/flow",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Flow chart Gem element powered by ELK",
   "keywords": [
     "gem",

@@ -78,25 +78,25 @@ importers:
   packages/examples:
     dependencies:
       '@gem-bind/diff2html':
-        specifier: ^0.0.4
+        specifier: ^0.0.5
         version: link:../diff2html
       '@gem-bind/flow':
-        specifier: ^0.0.2
+        specifier: ^0.0.3
         version: link:../flow
       '@gem-bind/latex':
-        specifier: ^0.0.2
+        specifier: ^0.0.3
         version: link:../latex
       '@gem-bind/lottie':
-        specifier: ^0.0.2
+        specifier: ^0.0.3
         version: link:../lottie
       '@gem-bind/map':
-        specifier: ^0.0.2
+        specifier: ^0.0.3
         version: link:../map
       '@gem-bind/marked':
-        specifier: ^0.0.6
+        specifier: ^0.0.7
         version: link:../marked
       '@gem-bind/mermaid':
-        specifier: ^0.0.3
+        specifier: ^0.0.4
         version: link:../mermaid
       '@mantou/gem':
         specifier: ^2.2.11
@@ -406,6 +406,7 @@ packages:
   '@mxyhi/tsgo@2025.4.16-12':
     resolution: {integrity: sha512-bil1IrObQLTIDR91dHa4HOjrOnIdwMv+bXXDV6kXTll+EjzG32eBXIHnpxqQdOcK6mEAuk2GhWp/5Q4ThksjTA==}
     engines: {node: '>=12'}
+    cpu: [x64, ia32, arm, arm64]
     os: [darwin, linux, win32, freebsd]
     hasBin: true
 
