@@ -1,3 +1,4 @@
+import { addMicrotask } from '@mantou/gem';
 import { DuoyunVisibleBaseElement } from 'duoyun-ui/elements/base/visible';
 import { hotkeys } from 'duoyun-ui/lib/hotkeys';
 import { theme } from 'duoyun-ui/lib/theme';
@@ -107,7 +108,17 @@ const style = css`
 `;
 
 let diagramId = 0;
+let mermaidQueue = Promise.resolve();
 const maxZoom = 8;
+
+const renderMermaid = <T>(task: () => Promise<T>) => {
+  const result = mermaidQueue.then(task, task);
+  mermaidQueue = result.then(
+    () => undefined,
+    () => undefined,
+  );
+  return result;
+};
 
 const parseSvg = (source: string) => {
   const template = document.createElement('template');
@@ -121,7 +132,136 @@ const getViewBox = (svg?: SVGSVGElement): ViewBox | undefined => {
   return { x: viewBox.x, y: viewBox.y, width: viewBox.width, height: viewBox.height };
 };
 
-export const repairMermaidSource = (source: string) => {
+const quoteMermaidText = (value: string) => {
+  const text = value.trim();
+  if (!text || (text.startsWith('"') && text.endsWith('"'))) return text;
+  return `"${text.replace(/(?<!\\)"/g, '\\"')}"`;
+};
+
+const repairRequirementDiagramSource = (source: string) => {
+  if (!/^\s*requirementDiagram\b/m.test(source)) return source;
+
+  return source
+    .split('\n')
+    .map((line) => {
+      if (line.trim().startsWith('%%')) return line;
+
+      const definition = line.match(
+        /^(\s*)(requirement|functionalRequirement|interfaceRequirement|performanceRequirement|physicalRequirement|designConstraint|element)\s+(.+?)\s*\{\s*$/,
+      );
+      if (definition) {
+        const [, indent, type, rawName] = definition;
+        const [name, className] = rawName.split(/(?=:::)/, 2);
+        return `${indent}${type} ${quoteMermaidText(name)}${className || ''} {`;
+      }
+
+      const propertyMatch = line.match(/^(\s*)(id|text|type|docref)\s*:\s*(.*?)\s*$/i);
+      if (propertyMatch) {
+        const [, indent, key, value] = propertyMatch;
+        return `${indent}${key}: ${quoteMermaidText(value)}`;
+      }
+
+      const forward = line.match(
+        /^(\s*)(.+?)\s+-\s+(contains|copies|derives|satisfies|verifies|refines|traces)\s+->\s+(.+?)\s*$/i,
+      );
+      if (forward) {
+        const [, indent, from, relation, to] = forward;
+        return `${indent}${quoteMermaidText(from)} - ${relation} -> ${quoteMermaidText(to)}`;
+      }
+
+      const backward = line.match(
+        /^(\s*)(.+?)\s+<-\s+(contains|copies|derives|satisfies|verifies|refines|traces)\s+-\s+(.+?)\s*$/i,
+      );
+      if (backward) {
+        const [, indent, to, relation, from] = backward;
+        return `${indent}${quoteMermaidText(to)} <- ${relation} - ${quoteMermaidText(from)}`;
+      }
+
+      return line;
+    })
+    .join('\n');
+};
+
+const repairQuadrantChartSource = (source: string) => {
+  if (!/^\s*quadrantChart\b/m.test(source)) return source;
+
+  return source
+    .split('\n')
+    .map((line) => {
+      if (line.trim().startsWith('%%')) return line;
+
+      const axis = line.match(/^(\s*)([xy]-axis)\s+(.+?)\s*$/i);
+      if (axis) {
+        const [, indent, name, text] = axis;
+        const parts = text.split(/\s*-->\s*/, 2);
+        return `${indent}${name} ${parts.map(quoteMermaidText).join(' --> ')}`;
+      }
+
+      const quadrant = line.match(/^(\s*)(quadrant-[1-4])\s+(.+?)\s*$/i);
+      if (quadrant) {
+        const [, indent, name, text] = quadrant;
+        return `${indent}${name} ${quoteMermaidText(text)}`;
+      }
+
+      const point = line.match(/^(\s*)(.+?)(:::\w+)?\s*:\s*(\[[^\]]+\].*)$/);
+      if (point) {
+        const [, indent, label, className = '', rest] = point;
+        return `${indent}${quoteMermaidText(label)}${className}: ${rest}`;
+      }
+
+      return line;
+    })
+    .join('\n');
+};
+
+type MermaidRepair = {
+  source: string;
+  replacements?: Map<string, string>;
+};
+
+const repairSankeySource = (source: string): MermaidRepair => {
+  if (!/^\s*sankey(?:-beta)?\b/m.test(source)) return { source };
+
+  const replacements = new Map<string, string>();
+  let index = 0;
+  const makeToken = (value: string) => {
+    let token = `MMDU${index++}MMD`;
+    while (source.includes(token)) token = `MMDU${index++}MMD`;
+    replacements.set(token, value);
+    return token;
+  };
+
+  const repaired = source
+    .split('\n')
+    .map((line, lineIndex) => {
+      if (lineIndex === 0 || !line.trim() || line.trim().startsWith('%%')) return line;
+
+      // LLMs often emit Chinese commas as CSV separators.
+      const fullWidthCommas = line.match(/，/g)?.length || 0;
+      let next = !line.includes(',') && fullWidthCommas === 2 ? line.replaceAll('，', ',') : line;
+
+      // Mermaid's Sankey lexer only accepts ASCII, even inside quoted CSV fields.
+      // biome-ignore lint/suspicious/noControlCharactersInRegex: match non-ascii
+      next = next.replace(/[^\x00-\x7F]+/g, makeToken);
+      return next;
+    })
+    .join('\n');
+
+  return { source: repaired, replacements };
+};
+
+const restoreSankeyLabels = (svg: SVGSVGElement, replacements?: Map<string, string>) => {
+  if (!replacements?.size) return;
+
+  const walker = document.createTreeWalker(svg, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    let text = node.nodeValue || '';
+    for (const [token, value] of replacements) text = text.replaceAll(token, value);
+    node.nodeValue = text;
+  }
+};
+
+const repairFlowchartSource = (source: string) => {
   return source
     .split('\n')
     .map((line) => {
@@ -151,8 +291,7 @@ export const repairMermaidSource = (source: string) => {
           if (trimmedLabel.startsWith('"') && trimmedLabel.endsWith('"')) {
             result += current.arrow + rawLabel + '|' + target;
           } else {
-            const escaped = trimmedLabel.replace(/(?<!\\)"/g, '\\"');
-            result += `${current.arrow}"${escaped}"|${target}`;
+            result += `${current.arrow}${quoteMermaidText(trimmedLabel)}|${target}`;
           }
         } else {
           result += current.arrow + segment;
@@ -163,6 +302,18 @@ export const repairMermaidSource = (source: string) => {
       return result;
     })
     .join('\n');
+};
+
+export const repairMermaidSource = (source: string) => {
+  if (/^\s*requirementDiagram\b/m.test(source)) return repairRequirementDiagramSource(source);
+  if (/^\s*quadrantChart\b/m.test(source)) return repairQuadrantChartSource(source);
+  if (/^\s*sankey(?:-beta)?\b/m.test(source)) return repairSankeySource(source).source;
+  return repairFlowchartSource(source);
+};
+
+const repairMermaidRenderSource = (source: string): MermaidRepair => {
+  if (/^\s*sankey(?:-beta)?\b/m.test(source)) return repairSankeySource(source);
+  return { source: repairMermaidSource(source) };
 };
 
 /** Renders the element's text content as an interactive Mermaid diagram. */
@@ -183,8 +334,10 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
 
   #state = createState<RenderState>({ source: '', isZoomed: false });
   #gestureRef = createRef<HTMLElement>();
-  #observer = new MutationObserver(() => this.#generateSvg());
-  #renderSequence = 0;
+  #observer = new MutationObserver(() => addMicrotask(this.#generateSvg));
+  #rendering = false;
+  #rerender = false;
+  #renderedConfig?: MermaidConfig;
   #svg?: SVGSVGElement;
   #initialViewBox?: ViewBox;
 
@@ -297,7 +450,6 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
     this.addEventListener('show', this.#generateSvg);
     return () => {
       this.#observer.disconnect();
-      this.#renderSequence += 1;
       this.removeEventListener('wheel', this.#onWheel);
       this.removeEventListener('keydown', this.#onKeydown);
       this.removeEventListener('dblclick', this.#onDblClick);
@@ -313,51 +465,74 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
     return () => (this.shadowRoot!.adoptedStyleSheets = sheets);
   };
 
-  #renderSvg = async (source: string, sequence: number, config: MermaidConfig) => {
+  @effect((i) => [i.config])
+  #generateSvg = async () => {
+    if (!this.visible) return;
+    if (this.#rendering) {
+      this.#rerender = true;
+      return;
+    }
+
+    const source = this.textContent?.trim() || '';
+    if (source === this.#state.source && this.config === this.#renderedConfig) return;
+
+    if (!source) {
+      this.#svg = undefined;
+      this.#initialViewBox = undefined;
+      this.#renderedConfig = this.config;
+      this.loading = false;
+      this.#state({ source: '', svg: undefined, bindFunctions: undefined, isZoomed: false });
+      return;
+    }
+
+    this.#rendering = true;
+    this.#rerender = false;
+    this.loading = true;
+
     try {
-      mermaid.initialize({
-        startOnLoad: false,
-        securityLevel: 'strict',
-        suppressErrorRendering: true,
-        fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-        ...config,
+      const config = {
+        theme: getComputedStyle(this).colorScheme === 'dark' ? 'dark' : 'default',
+        ...this.config,
+      } satisfies MermaidConfig;
+
+      let sankeyReplacements: Map<string, string> | undefined;
+      const { svg, bindFunctions } = await renderMermaid(async () => {
+        mermaid.initialize({
+          startOnLoad: false,
+          securityLevel: 'strict',
+          suppressErrorRendering: true,
+          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+          ...config,
+        });
+
+        try {
+          return await mermaid.render(`gem-bind-mermaid-${++diagramId}`, source);
+        } catch (error) {
+          const repair = repairMermaidRenderSource(source);
+          if (repair.source === source) throw error;
+          console.warn('Mermaid source repaired:', { source, repaired: repair.source });
+          sankeyReplacements = repair.replacements;
+          return mermaid.render(`gem-bind-mermaid-${++diagramId}`, repair.source);
+        }
       });
-      let renderResult: { svg: string; bindFunctions?: (element: Element) => void };
-      try {
-        renderResult = await mermaid.render(`gem-bind-mermaid-${++diagramId}`, source);
-      } catch (err) {
-        const repaired = repairMermaidSource(source);
-        if (repaired === source) throw err;
-        renderResult = await mermaid.render(`gem-bind-mermaid-${++diagramId}`, repaired);
-      }
-      const { svg, bindFunctions } = renderResult;
-      if (sequence !== this.#renderSequence) return;
+
+      if (!this.isConnected || source !== this.textContent?.trim()) return;
+
       const svgElement = parseSvg(svg);
+      if (svgElement) restoreSankeyLabels(svgElement, sankeyReplacements);
       this.#svg = svgElement;
       this.#initialViewBox = getViewBox(svgElement);
+      this.#renderedConfig = this.config;
       this.#state({ source, svg: svgElement, bindFunctions, isZoomed: false });
     } catch (error) {
-      if (sequence !== this.#renderSequence) return;
       console.error('Mermaid render failed:', error);
-      this.#state({ source, svg: undefined, bindFunctions: undefined, isZoomed: false });
     } finally {
-      if (sequence === this.#renderSequence) this.loading = false;
+      this.#rendering = false;
+      this.loading = false;
+      if (this.isConnected && (this.#rerender || source !== this.textContent?.trim())) {
+        addMicrotask(this.#generateSvg);
+      }
     }
-  };
-
-  @effect((i) => [i.config])
-  #generateSvg = () => {
-    if (!this.visible) return;
-    this.#svg = undefined;
-    this.#initialViewBox = undefined;
-    const source = this.textContent?.trim() || '';
-    const sequence = ++this.#renderSequence;
-    this.loading = Boolean(source);
-    this.#state({ source, svg: undefined, bindFunctions: undefined, isZoomed: false });
-    if (!source) return;
-
-    const themeName = getComputedStyle(this).colorScheme === 'dark' ? 'dark' : 'default';
-    void this.#renderSvg(source, sequence, { theme: themeName, ...this.config });
   };
 
   @effect()
@@ -371,7 +546,7 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
   };
 
   render = () => {
-    const svg = this.#state.source === this.textContent?.trim() ? this.#state.svg : undefined;
+    const svg = this.#state.svg;
 
     return html`
       <dy-gesture
