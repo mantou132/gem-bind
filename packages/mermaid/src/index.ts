@@ -1,4 +1,5 @@
 import { DuoyunVisibleBaseElement } from 'duoyun-ui/elements/base/visible';
+import { hotkeys } from 'duoyun-ui/lib/hotkeys';
 import { theme } from 'duoyun-ui/lib/theme';
 import mermaid, { type MermaidConfig } from 'mermaid';
 
@@ -232,6 +233,16 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
   #zoomIn = () => this.#zoom(1.25);
   #zoomOut = () => this.#zoom(0.8);
 
+  #panBy = (ratioX: number, ratioY: number) => {
+    const viewBox = getViewBox(this.#svg);
+    if (!viewBox || !this.#state.isZoomed) return;
+    this.#setViewBox({
+      ...viewBox,
+      x: viewBox.x + ratioX * viewBox.width,
+      y: viewBox.y + ratioY * viewBox.height,
+    });
+  };
+
   #onWheel = (event: WheelEvent) => {
     if (!this.#svg || !event.composedPath().includes(this.#svg)) return;
     event.preventDefault();
@@ -255,23 +266,19 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
     if (Number.isFinite(detail.scale) && detail.scale > 0) this.#zoom(detail.scale, detail.x, detail.y);
   };
 
+  #hotkeyHandler = hotkeys({
+    '=, shift+=, add': this.#zoomIn,
+    '-, subtract': this.#zoomOut,
+    '0': this.#resetView,
+    left: () => this.#panBy(-0.1, 0),
+    right: () => this.#panBy(0.1, 0),
+    up: () => this.#panBy(0, -0.1),
+    down: () => this.#panBy(0, 0.1),
+  });
+
   #onKeydown = (event: KeyboardEvent) => {
-    const viewBox = getViewBox(this.#svg);
-    if (event.composedPath()[0] !== this || !viewBox) return;
-    if (event.key === '+' || event.key === '=') this.#zoom(1.25);
-    else if (event.key === '-') this.#zoom(0.8);
-    else if (event.key === '0') this.#resetView();
-    else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
-      if (!this.#state.isZoomed) return;
-      const x = event.key === 'ArrowLeft' ? -0.1 : event.key === 'ArrowRight' ? 0.1 : 0;
-      const y = event.key === 'ArrowUp' ? -0.1 : event.key === 'ArrowDown' ? 0.1 : 0;
-      this.#setViewBox({
-        ...viewBox,
-        x: viewBox.x + x * viewBox.width,
-        y: viewBox.y + y * viewBox.height,
-      });
-    } else return;
-    event.preventDefault();
+    if (event.composedPath()[0] !== this) return;
+    this.#hotkeyHandler(event);
   };
 
   #onDblClick = (event: MouseEvent) => {
