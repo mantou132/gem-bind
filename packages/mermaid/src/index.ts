@@ -19,6 +19,7 @@ type RenderState = {
   source: string;
   svg?: SVGSVGElement;
   bindFunctions?: (element: Element) => void;
+  isZoomed?: boolean;
 };
 
 const style = css`
@@ -179,7 +180,7 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
 
   @state loading: boolean;
 
-  #state = createState<RenderState>({ source: '' });
+  #state = createState<RenderState>({ source: '', isZoomed: false });
   #gestureRef = createRef<HTMLElement>();
   #observer = new MutationObserver(() => this.#generateSvg());
   #renderSequence = 0;
@@ -198,6 +199,10 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
       height,
     };
     this.#svg.setAttribute('viewBox', `${next.x} ${next.y} ${next.width} ${next.height}`);
+    const isZoomed = initial.width - width > 0.01;
+    if (this.#state.isZoomed !== isZoomed) {
+      this.#state({ isZoomed });
+    }
   };
 
   #zoom = (factor: number, clientX?: number, clientY?: number) => {
@@ -234,7 +239,7 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
   };
 
   #onPan = ({ detail }: CustomEvent<import('duoyun-ui/elements/gesture').PanEventDetail>) => {
-    if (!this.#svg) return;
+    if (!this.#svg || !this.#state.isZoomed) return;
     const viewBox = getViewBox(this.#svg);
     if (!viewBox) return;
     const rect = this.#svg.getBoundingClientRect();
@@ -257,6 +262,7 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
     else if (event.key === '-') this.#zoom(0.8);
     else if (event.key === '0') this.#resetView();
     else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+      if (!this.#state.isZoomed) return;
       const x = event.key === 'ArrowLeft' ? -0.1 : event.key === 'ArrowRight' ? 0.1 : 0;
       const y = event.key === 'ArrowUp' ? -0.1 : event.key === 'ArrowDown' ? 0.1 : 0;
       this.#setViewBox({
@@ -268,17 +274,26 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
     event.preventDefault();
   };
 
+  #onDblClick = (event: MouseEvent) => {
+    if (!this.#svg || event.composedPath().some((el) => el instanceof Element && el.classList.contains('controls')))
+      return;
+    event.preventDefault();
+    this.#resetView();
+  };
+
   @mounted()
   #observeSource = () => {
     this.#observer.observe(this, { characterData: true, childList: true, subtree: true });
     this.addEventListener('wheel', this.#onWheel, { passive: false });
     this.addEventListener('keydown', this.#onKeydown);
+    this.addEventListener('dblclick', this.#onDblClick);
     this.addEventListener('show', this.#generateSvg);
     return () => {
       this.#observer.disconnect();
       this.#renderSequence += 1;
       this.removeEventListener('wheel', this.#onWheel);
       this.removeEventListener('keydown', this.#onKeydown);
+      this.removeEventListener('dblclick', this.#onDblClick);
       this.removeEventListener('show', this.#generateSvg);
     };
   };
@@ -313,11 +328,11 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
       const svgElement = parseSvg(svg);
       this.#svg = svgElement;
       this.#initialViewBox = getViewBox(svgElement);
-      this.#state({ source, svg: svgElement, bindFunctions });
+      this.#state({ source, svg: svgElement, bindFunctions, isZoomed: false });
     } catch (error) {
       if (sequence !== this.#renderSequence) return;
       console.error('Mermaid render failed:', error);
-      this.#state({ source, svg: undefined, bindFunctions: undefined });
+      this.#state({ source, svg: undefined, bindFunctions: undefined, isZoomed: false });
     } finally {
       if (sequence === this.#renderSequence) this.loading = false;
     }
@@ -331,7 +346,7 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
     const source = this.textContent?.trim() || '';
     const sequence = ++this.#renderSequence;
     this.loading = Boolean(source);
-    this.#state({ source, svg: undefined, bindFunctions: undefined });
+    this.#state({ source, svg: undefined, bindFunctions: undefined, isZoomed: false });
     if (!source) return;
 
     const themeName = getComputedStyle(this).colorScheme === 'dark' ? 'dark' : 'default';
@@ -352,7 +367,12 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
     const svg = this.#state.source === this.textContent?.trim() ? this.#state.svg : undefined;
 
     return html`
-      <dy-gesture ${this.#gestureRef} touch-action="pan-y" @pan=${this.#onPan} @pinch=${this.#onPinch}>${svg}</dy-gesture>
+      <dy-gesture
+        ${this.#gestureRef}
+        touch-action=${this.#state.isZoomed ? 'none' : 'pan-y'}
+        @pan=${this.#onPan}
+        @pinch=${this.#onPinch}
+      >${svg}</dy-gesture>
       <div v-if=${!!svg && !this.noControls} class="controls">
         <button type="button" class="control" aria-label="Zoom out" title="Zoom out" @click=${this.#zoomOut}>
           −
