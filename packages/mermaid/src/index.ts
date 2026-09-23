@@ -121,9 +121,14 @@ const renderMermaid = <T>(task: () => Promise<T>) => {
 };
 
 const parseSvg = (source: string) => {
-  const template = document.createElement('template');
-  template.innerHTML = source;
-  return template.content.querySelector<SVGSVGElement>('svg') || undefined;
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(source, 'image/svg+xml');
+  if (!doc.querySelector('parsererror')) {
+    const parsedSvg = doc.querySelector('svg');
+    if (parsedSvg) {
+      return (document.importNode ? document.importNode(parsedSvg, true) : parsedSvg) as SVGSVGElement;
+    }
+  }
 };
 
 const getViewBox = (svg?: SVGSVGElement): ViewBox | undefined => {
