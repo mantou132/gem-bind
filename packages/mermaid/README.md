@@ -34,3 +34,11 @@ through `config` can override these defaults.
 - Press `0` or use the reset button to restore the initial view.
 
 The package re-exports Mermaid and its types.
+
+## Source repair
+
+If rendering fails, the component retries with limited repairs for flowchart edge labels, requirement diagrams,
+quadrant charts, and Sankey CSV. Sankey rendering also handles non-ASCII labels while preserving shared nodes.
+
+The exported `repairMermaidSource(source)` performs text-only repairs and preserves readable labels. It does not
+expose the temporary identifiers used internally to render non-ASCII Sankey labels.

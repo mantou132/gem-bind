@@ -4,11 +4,15 @@ import { hotkeys } from 'duoyun-ui/lib/hotkeys';
 import { theme } from 'duoyun-ui/lib/theme';
 import mermaid, { type MermaidConfig } from 'mermaid';
 
-import 'duoyun-ui/elements/gesture';
+import { repairMermaidRenderSource } from './repair';
+
 import './types';
+import 'duoyun-ui/elements/gesture';
 
 export * from 'mermaid';
 export { default as mermaid } from 'mermaid';
+
+export { repairMermaidSource } from './repair';
 
 type ViewBox = {
   x: number;
@@ -126,7 +130,7 @@ const parseSvg = (source: string) => {
   if (!doc.querySelector('parsererror')) {
     const parsedSvg = doc.querySelector('svg');
     if (parsedSvg) {
-      return (document.importNode ? document.importNode(parsedSvg, true) : parsedSvg) as SVGSVGElement;
+      return document.importNode(parsedSvg, true) as SVGSVGElement;
     }
   }
 };
@@ -135,124 +139,6 @@ const getViewBox = (svg?: SVGSVGElement): ViewBox | undefined => {
   const viewBox = svg?.viewBox.baseVal;
   if (!viewBox?.width || !viewBox.height) return;
   return { x: viewBox.x, y: viewBox.y, width: viewBox.width, height: viewBox.height };
-};
-
-const quoteMermaidText = (value: string) => {
-  const text = value.trim();
-  if (!text || (text.startsWith('"') && text.endsWith('"'))) return text;
-  return `"${text.replace(/(?<!\\)"/g, '\\"')}"`;
-};
-
-const repairRequirementDiagramSource = (source: string) => {
-  if (!/^\s*requirementDiagram\b/m.test(source)) return source;
-
-  return source
-    .split('\n')
-    .map((line) => {
-      if (line.trim().startsWith('%%')) return line;
-
-      const definition = line.match(
-        /^(\s*)(requirement|functionalRequirement|interfaceRequirement|performanceRequirement|physicalRequirement|designConstraint|element)\s+(.+?)\s*\{\s*$/,
-      );
-      if (definition) {
-        const [, indent, type, rawName] = definition;
-        const [name, className] = rawName.split(/(?=:::)/, 2);
-        return `${indent}${type} ${quoteMermaidText(name)}${className || ''} {`;
-      }
-
-      const propertyMatch = line.match(/^(\s*)(id|text|type|docref)\s*:\s*(.*?)\s*$/i);
-      if (propertyMatch) {
-        const [, indent, key, value] = propertyMatch;
-        return `${indent}${key}: ${quoteMermaidText(value)}`;
-      }
-
-      const forward = line.match(
-        /^(\s*)(.+?)\s+-\s+(contains|copies|derives|satisfies|verifies|refines|traces)\s+->\s+(.+?)\s*$/i,
-      );
-      if (forward) {
-        const [, indent, from, relation, to] = forward;
-        return `${indent}${quoteMermaidText(from)} - ${relation} -> ${quoteMermaidText(to)}`;
-      }
-
-      const backward = line.match(
-        /^(\s*)(.+?)\s+<-\s+(contains|copies|derives|satisfies|verifies|refines|traces)\s+-\s+(.+?)\s*$/i,
-      );
-      if (backward) {
-        const [, indent, to, relation, from] = backward;
-        return `${indent}${quoteMermaidText(to)} <- ${relation} - ${quoteMermaidText(from)}`;
-      }
-
-      return line;
-    })
-    .join('\n');
-};
-
-const repairQuadrantChartSource = (source: string) => {
-  if (!/^\s*quadrantChart\b/m.test(source)) return source;
-
-  return source
-    .split('\n')
-    .map((line) => {
-      if (line.trim().startsWith('%%')) return line;
-
-      const axis = line.match(/^(\s*)([xy]-axis)\s+(.+?)\s*$/i);
-      if (axis) {
-        const [, indent, name, text] = axis;
-        const parts = text.split(/\s*-->\s*/, 2);
-        return `${indent}${name} ${parts.map(quoteMermaidText).join(' --> ')}`;
-      }
-
-      const quadrant = line.match(/^(\s*)(quadrant-[1-4])\s+(.+?)\s*$/i);
-      if (quadrant) {
-        const [, indent, name, text] = quadrant;
-        return `${indent}${name} ${quoteMermaidText(text)}`;
-      }
-
-      const point = line.match(/^(\s*)(.+?)(:::\w+)?\s*:\s*(\[[^\]]+\].*)$/);
-      if (point) {
-        const [, indent, label, className = '', rest] = point;
-        return `${indent}${quoteMermaidText(label)}${className}: ${rest}`;
-      }
-
-      return line;
-    })
-    .join('\n');
-};
-
-type MermaidRepair = {
-  source: string;
-  replacements?: Map<string, string>;
-};
-
-const repairSankeySource = (source: string): MermaidRepair => {
-  if (!/^\s*sankey(?:-beta)?\b/m.test(source)) return { source };
-
-  const replacements = new Map<string, string>();
-  let index = 0;
-  const makeToken = (value: string) => {
-    let token = `MMDU${index++}MMD`;
-    while (source.includes(token)) token = `MMDU${index++}MMD`;
-    replacements.set(token, value);
-    return token;
-  };
-
-  const repaired = source
-    .split('\n')
-    .map((line, lineIndex) => {
-      if (lineIndex === 0 || !line.trim() || line.trim().startsWith('%%')) return line;
-
-      // LLMs often emit Chinese commas as CSV separators.
-      const fullWidthCommas = line.match(/，/g)?.length || 0;
-      let next = !line.includes(',') && fullWidthCommas === 2 ? line.replaceAll('，', ',') : line;
-
-      // Mermaid's Sankey lexer only accepts ASCII, even inside quoted CSV fields.
-      // biome-ignore lint/suspicious/noControlCharactersInRegex: match non-ascii
-      next = next.replace(/[^\x00-\x7F]+/g, makeToken);
-      return next;
-    })
-    .join('\n');
-
-  return { source: repaired, replacements };
 };
 
 const restoreSankeyLabels = (svg: SVGSVGElement, replacements?: Map<string, string>) => {
@@ -264,61 +150,6 @@ const restoreSankeyLabels = (svg: SVGSVGElement, replacements?: Map<string, stri
     for (const [token, value] of replacements) text = text.replaceAll(token, value);
     node.nodeValue = text;
   }
-};
-
-const repairFlowchartSource = (source: string) => {
-  return source
-    .split('\n')
-    .map((line) => {
-      if (line.trim().startsWith('%%')) return line;
-
-      const arrowRegex = /([-=.~<>ox]+\|)/g;
-      let match: RegExpExecArray | null;
-      const arrowIndices: Array<{ index: number; length: number; arrow: string }> = [];
-      while ((match = arrowRegex.exec(line)) !== null) {
-        arrowIndices.push({ index: match.index, length: match[0].length, arrow: match[0] });
-      }
-      if (arrowIndices.length === 0) return line;
-
-      let result = '';
-      let lastEnd = 0;
-      for (let i = 0; i < arrowIndices.length; i++) {
-        const current = arrowIndices[i];
-        result += line.slice(lastEnd, current.index);
-        const nextArrowIndex = i + 1 < arrowIndices.length ? arrowIndices[i + 1].index : line.length;
-        const segment = line.slice(current.index + current.length, nextArrowIndex);
-
-        const lastPipeIndex = segment.lastIndexOf('|');
-        if (lastPipeIndex !== -1) {
-          const rawLabel = segment.slice(0, lastPipeIndex);
-          const target = segment.slice(lastPipeIndex + 1);
-          const trimmedLabel = rawLabel.trim();
-          if (trimmedLabel.startsWith('"') && trimmedLabel.endsWith('"')) {
-            result += current.arrow + rawLabel + '|' + target;
-          } else {
-            result += `${current.arrow}${quoteMermaidText(trimmedLabel)}|${target}`;
-          }
-        } else {
-          result += current.arrow + segment;
-        }
-        lastEnd = nextArrowIndex;
-      }
-      result += line.slice(lastEnd);
-      return result;
-    })
-    .join('\n');
-};
-
-export const repairMermaidSource = (source: string) => {
-  if (/^\s*requirementDiagram\b/m.test(source)) return repairRequirementDiagramSource(source);
-  if (/^\s*quadrantChart\b/m.test(source)) return repairQuadrantChartSource(source);
-  if (/^\s*sankey(?:-beta)?\b/m.test(source)) return repairSankeySource(source).source;
-  return repairFlowchartSource(source);
-};
-
-const repairMermaidRenderSource = (source: string): MermaidRepair => {
-  if (/^\s*sankey(?:-beta)?\b/m.test(source)) return repairSankeySource(source);
-  return { source: repairMermaidSource(source) };
 };
 
 /** Renders the element's text content as an interactive Mermaid diagram. */
@@ -343,11 +174,10 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
   #rendering = false;
   #rerender = false;
   #renderedConfig?: MermaidConfig;
-  #svg?: SVGSVGElement;
   #initialViewBox?: ViewBox;
 
   #setViewBox = (viewBox: ViewBox) => {
-    if (!this.#svg || !this.#initialViewBox) return;
+    if (!this.#state.svg || !this.#initialViewBox) return;
     const initial = this.#initialViewBox;
     const width = Math.min(initial.width, viewBox.width);
     const height = Math.min(initial.height, viewBox.height);
@@ -357,7 +187,7 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
       width,
       height,
     };
-    this.#svg.setAttribute('viewBox', `${next.x} ${next.y} ${next.width} ${next.height}`);
+    this.#state.svg.setAttribute('viewBox', `${next.x} ${next.y} ${next.width} ${next.height}`);
     const isZoomed = initial.width - width > 0.01;
     if (this.#state.isZoomed !== isZoomed) {
       this.#state({ isZoomed });
@@ -365,17 +195,21 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
   };
 
   #zoom = (factor: number, clientX?: number, clientY?: number) => {
-    if (!this.#svg || !this.#initialViewBox) return;
+    if (!this.#state.svg || !this.#initialViewBox) return;
     const initial = this.#initialViewBox;
-    const current = getViewBox(this.#svg);
+    const current = getViewBox(this.#state.svg);
     if (!current) return;
     const scale = initial.width / current.width;
     const nextScale = Math.min(maxZoom, Math.max(1, scale * factor));
     const width = initial.width / nextScale;
     const height = initial.height / nextScale;
-    const rect = this.#svg.getBoundingClientRect();
-    const ratioX = clientX === undefined || !rect.width ? 0.5 : (clientX - rect.left) / rect.width;
-    const ratioY = clientY === undefined || !rect.height ? 0.5 : (clientY - rect.top) / rect.height;
+    const matrix = this.#state.svg.getScreenCTM();
+    const point =
+      matrix && clientX !== undefined && clientY !== undefined
+        ? new DOMPoint(clientX, clientY).matrixTransform(matrix.inverse())
+        : undefined;
+    const ratioX = point ? (point.x - current.x) / current.width : 0.5;
+    const ratioY = point ? (point.y - current.y) / current.height : 0.5;
     this.#setViewBox({
       x: current.x + ratioX * (current.width - width),
       y: current.y + ratioY * (current.height - height),
@@ -392,7 +226,7 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
   #zoomOut = () => this.#zoom(0.8);
 
   #panBy = (ratioX: number, ratioY: number) => {
-    const viewBox = getViewBox(this.#svg);
+    const viewBox = getViewBox(this.#state.svg);
     if (!viewBox || !this.#state.isZoomed) return;
     this.#setViewBox({
       ...viewBox,
@@ -402,21 +236,21 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
   };
 
   #onWheel = (event: WheelEvent) => {
-    if (!this.#svg || !event.composedPath().includes(this.#svg)) return;
+    if (!this.#state.svg || !event.composedPath().includes(this.#state.svg)) return;
     event.preventDefault();
     this.#zoom(Math.exp(-event.deltaY * 0.002), event.clientX, event.clientY);
   };
 
   #onPan = ({ detail }: CustomEvent<import('duoyun-ui/elements/gesture').PanEventDetail>) => {
-    if (!this.#svg || !this.#state.isZoomed) return;
-    const viewBox = getViewBox(this.#svg);
+    if (!this.#state.svg || !this.#state.isZoomed) return;
+    const viewBox = getViewBox(this.#state.svg);
     if (!viewBox) return;
-    const rect = this.#svg.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
+    const matrix = this.#state.svg.getScreenCTM()?.inverse();
+    if (!matrix) return;
     this.#setViewBox({
       ...viewBox,
-      x: viewBox.x - (detail.x * viewBox.width) / rect.width,
-      y: viewBox.y - (detail.y * viewBox.height) / rect.height,
+      x: viewBox.x - (matrix.a * detail.x + matrix.c * detail.y),
+      y: viewBox.y - (matrix.b * detail.x + matrix.d * detail.y),
     });
   };
 
@@ -440,7 +274,10 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
   };
 
   #onDblClick = (event: MouseEvent) => {
-    if (!this.#svg || event.composedPath().some((el) => el instanceof Element && el.classList.contains('controls')))
+    if (
+      !this.#state.svg ||
+      event.composedPath().some((el) => el instanceof Element && el.classList.contains('controls'))
+    )
       return;
     event.preventDefault();
     this.#resetView();
@@ -479,12 +316,12 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
     }
 
     const source = this.textContent?.trim() || '';
-    if (source === this.#state.source && this.config === this.#renderedConfig) return;
+    const requestedConfig = this.config;
+    if (source === this.#state.source && requestedConfig === this.#renderedConfig) return;
 
     if (!source) {
-      this.#svg = undefined;
       this.#initialViewBox = undefined;
-      this.#renderedConfig = this.config;
+      this.#renderedConfig = requestedConfig;
       this.loading = false;
       this.#state({ source: '', svg: undefined, bindFunctions: undefined, isZoomed: false });
       return;
@@ -497,7 +334,7 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
     try {
       const config = {
         theme: getComputedStyle(this).colorScheme === 'dark' ? 'dark' : 'default',
-        ...this.config,
+        ...requestedConfig,
       } satisfies MermaidConfig;
 
       let sankeyReplacements: Map<string, string> | undefined;
@@ -521,26 +358,28 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
         }
       });
 
-      if (!this.isConnected || source !== this.textContent?.trim()) return;
+      if (!this.isConnected || source !== this.textContent?.trim() || requestedConfig !== this.config) return;
 
       const svgElement = parseSvg(svg);
       if (svgElement) restoreSankeyLabels(svgElement, sankeyReplacements);
-      this.#svg = svgElement;
       this.#initialViewBox = getViewBox(svgElement);
-      this.#renderedConfig = this.config;
+      this.#renderedConfig = requestedConfig;
       this.#state({ source, svg: svgElement, bindFunctions, isZoomed: false });
     } catch (error) {
       console.error('Mermaid render failed:', error);
     } finally {
       this.#rendering = false;
       this.loading = false;
-      if (this.isConnected && (this.#rerender || source !== this.textContent?.trim())) {
+      if (
+        this.isConnected &&
+        (this.#rerender || source !== this.textContent?.trim() || requestedConfig !== this.config)
+      ) {
         addMicrotask(this.#generateSvg);
       }
     }
   };
 
-  @effect()
+  @effect((i) => [i.#state.svg])
   #bindMermaid = () => {
     const { source, svg, bindFunctions } = this.#state;
     if (!svg || source !== this.textContent?.trim()) return;

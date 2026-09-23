@@ -16,6 +16,7 @@
     "access": "public"
   },
   "scripts": {
+    "test": "node --test test/*.test.cjs",
     "build": "pnpm build:type && swc --strip-leading-paths src --out-dir ./dist",
     "build:type": "tsc --emitDeclarationOnly --outDir ./dist",
     "start": "concurrently \"swc --strip-leading-paths src --out-dir ./dist --watch\" \"pnpm build:type --watch\"",
