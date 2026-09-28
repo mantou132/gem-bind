@@ -1,0 +1,47 @@
+{
+  "name": "@gem-bind/echarts",
+  "version": "0.0.2",
+  "description": "Apache ECharts gem element",
+  "keywords": [
+    "gem",
+    "echarts"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "swc --strip-leading-paths src --out-dir ./dist",
+    "build:type": "tsc --emitDeclarationOnly --outDir ./dist",
+    "start": "concurrently \"pnpm build --watch\" \"pnpm build:type --watch\"",
+    "prepublishOnly": "pnpm build:type && pnpm build"
+  },
+  "peerDependencies": {
+    "@mantou/gem": "^2.0.0",
+    "duoyun-ui": "^2.0.0"
+  },
+  "dependencies": {
+    "@swc/helpers": "^0.5.23",
+    "echarts": "^6.1.0"
+  },
+  "devDependencies": {
+    "@gem-bind/config": "^2.1.1",
+    "@mantou/gem": "^2.2.11",
+    "duoyun-ui": "^2.2.13"
+  },
+  "author": "mantou132",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mantou132/gem-bind.git",
+    "directory": "packages/echarts"
+  },
+  "bugs": {
+    "url": "https://github.com/mantou132/gem-bind/issues"
+  },
+  "homepage": "https://github.com/mantou132/gem-bind#readme"
+}

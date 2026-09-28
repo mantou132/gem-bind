@@ -1,0 +1,6 @@
+{
+  "order": 50,
+  "name": "echarts",
+  "group": "Visualizations",
+  "desc": "Apache ECharts charts"
+}

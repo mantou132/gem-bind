@@ -75,11 +75,33 @@ importers:
         specifier: ^2.2.13
         version: 2.2.13(@mantou/gem@2.2.11)
 
+  packages/echarts:
+    dependencies:
+      '@swc/helpers':
+        specifier: ^0.5.23
+        version: 0.5.23
+      echarts:
+        specifier: ^6.1.0
+        version: 6.1.0
+    devDependencies:
+      '@gem-bind/config':
+        specifier: ^2.1.1
+        version: link:../config
+      '@mantou/gem':
+        specifier: ^2.2.11
+        version: 2.2.11
+      duoyun-ui:
+        specifier: ^2.2.13
+        version: 2.2.13(@mantou/gem@2.2.11)
+
   packages/examples:
     dependencies:
       '@gem-bind/diff2html':
         specifier: ^0.0.5
         version: link:../diff2html
+      '@gem-bind/echarts':
+        specifier: ^0.0.1
+        version: link:../echarts
       '@gem-bind/flow':
         specifier: ^0.0.3
         version: link:../flow
@@ -406,7 +428,6 @@ packages:
   '@mxyhi/tsgo@2025.4.16-12':
     resolution: {integrity: sha512-bil1IrObQLTIDR91dHa4HOjrOnIdwMv+bXXDV6kXTll+EjzG32eBXIHnpxqQdOcK6mEAuk2GhWp/5Q4ThksjTA==}
     engines: {node: '>=12'}
-    cpu: [x64, ia32, arm, arm64]
     os: [darwin, linux, win32, freebsd]
     hasBin: true
 
@@ -1872,6 +1893,9 @@ packages:
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
+
+  echarts@6.1.0:
+    resolution: {integrity: sha512-q0yaFPggC9FUdsWH4blavRWFmxdrIodbkoKNAjJudAI6CA9gNPxHtV2RcZNEepZVlk4yvBYkOkbk6HIVpIyHZA==}
 
   ejs@3.1.10:
     resolution: {integrity: sha512-UeJmFfOrAQS8OJWPZ4qtgHyWExa088/MtK5UEyoJGFH67cDEXkZSviOiKRCZ4Xij0zxI3JECgYs3oKx+AizQBA==}
@@ -3615,6 +3639,9 @@ packages:
     resolution: {integrity: sha512-NoZ4roiN7LnbKn9QqE1amc9DJfzvZXxF4xDavcOWt1BPkdx+m+0gJuPM+S0vCe7zTJMYUP0R8pO2XMr+Y8oLIg==}
     engines: {node: '>=6'}
 
+  tslib@2.3.0:
+    resolution: {integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==}
+
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
@@ -3885,6 +3912,9 @@ packages:
   yoctocolors@2.2.0:
     resolution: {integrity: sha512-xYqdZFUK/VYazNl/oCDYN+3WloWQwMfZxBoiNt6qNyk+xfOdi598muWE42rNZFp1kNOiqW936q5RhUdnpqElSg==}
     engines: {node: '>=18'}
+
+  zrender@6.1.0:
+    resolution: {integrity: sha512-oEGMDB6pOP2S6OwRR4PdVv610zrjnA3Bh+JnSG12fYJlBKjtNAoEb5fSUoCOOINlH96I2fU38/A2UpRKs67xYQ==}
 
 snapshots:
 
@@ -5659,6 +5689,11 @@ snapshots:
       deep-query-selector: 1.0.2
 
   eastasianwidth@0.2.0: {}
+
+  echarts@6.1.0:
+    dependencies:
+      tslib: 2.3.0
+      zrender: 6.1.0
 
   ejs@3.1.10:
     dependencies:
@@ -7559,6 +7594,8 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
+  tslib@2.3.0: {}
+
   tslib@2.8.1: {}
 
   tuf-js@2.2.1:
@@ -7783,3 +7820,7 @@ snapshots:
       pend: 1.2.0
 
   yoctocolors@2.2.0: {}
+
+  zrender@6.1.0:
+    dependencies:
+      tslib: 2.3.0

@@ -13,6 +13,7 @@
 | [`@gem-bind/flow`](./packages/flow) | `<gem-bind-flow>` | [ELK](https://www.eclipse.org/elk/) — lay out directed graphs |
 | [`@gem-bind/mermaid`](./packages/mermaid) | `<gem-bind-mermaid>` | [Mermaid](https://mermaid.js.org/) — render text-based diagrams |
 | [`@gem-bind/latex`](./packages/latex) | `<gem-bind-latex>` | [KaTeX](https://katex.org/) — render LaTeX math |
+| [`@gem-bind/echarts`](./packages/echarts) | `<gem-bind-echarts>` | [ECharts](https://echarts.apache.org/) — render interactive charts |
 
 ## Usage
 

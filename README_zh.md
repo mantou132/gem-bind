@@ -13,6 +13,7 @@
 | [`@gem-bind/flow`](./packages/flow) | `<gem-bind-flow>` | [ELK](https://www.eclipse.org/elk/) — 自动布局有向图 |
 | [`@gem-bind/mermaid`](./packages/mermaid) | `<gem-bind-mermaid>` | [Mermaid](https://mermaid.js.org/) — 渲染文本图表 |
 | [`@gem-bind/latex`](./packages/latex) | `<gem-bind-latex>` | [KaTeX](https://katex.org/) — 渲染 LaTeX 数学公式 |
+| [`@gem-bind/echarts`](./packages/echarts) | `<gem-bind-echarts>` | [ECharts](https://echarts.apache.org/) — 渲染交互式图表 |
 
 ## 使用
 
