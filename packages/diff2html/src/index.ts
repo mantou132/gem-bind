@@ -1,6 +1,6 @@
 import { html } from 'diff2html';
 import type { ColorSchemeType } from 'diff2html/lib/types';
-import { blockContainer } from 'duoyun-ui/lib/styles';
+import { flexContainer } from 'duoyun-ui/lib/styles';
 import type { HLJSApi } from 'highlight.js';
 
 // upstream's `Diff2HtmlUI` with its highlighting support is not reachable
@@ -58,6 +58,27 @@ const style = css`
     overflow: hidden;
     box-sizing: border-box;
 
+    /* When the host is taller than the diff, the last file's horizontal
+       scrollers stretch to fill it, so the blank area still scrolls sideways */
+    flex-direction: column;
+
+    .d2h-wrapper,
+    .d2h-file-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .d2h-wrapper,
+    .d2h-file-wrapper:last-child,
+    .d2h-file-wrapper:last-child > :is(.d2h-file-diff, .d2h-files-diff) {
+      flex: 1 0 auto;
+    }
+
+    /* Paint the stretched blank area; diff2html only colors the dark wrapper */
+    .d2h-light-color-scheme {
+      background-color: var(--d2h-bg-color);
+    }
+
     .d2h-code-linenumber,
     .d2h-file-side-diff:first-child .d2h-code-side-linenumber {
       border-left: none;
@@ -66,6 +87,34 @@ const style = css`
     .d2h-wrapper .d2h-file-wrapper {
       margin-bottom: 0;
       border: none;
+    }
+
+    /* Style the file list title as a bar matching each file's header */
+    .d2h-file-list-wrapper {
+      margin-bottom: 0;
+      border-bottom: 1px solid var(--d2h-file-header-border-color);
+    }
+
+    .d2h-file-list-header {
+      display: flex;
+      align-items: center;
+      height: 35px;
+      padding: 5px 10px;
+      box-sizing: border-box;
+      font-size: 15px;
+      background-color: var(--d2h-file-header-bg-color);
+      border-bottom: 1px solid var(--d2h-file-header-border-color);
+    }
+
+    .d2h-dark-color-scheme {
+      &.d2h-file-list-wrapper,
+      .d2h-file-list-header {
+        border-bottom-color: var(--d2h-dark-file-header-border-color);
+      }
+
+      .d2h-file-list-header {
+        background-color: var(--d2h-dark-file-header-bg-color);
+      }
     }
 
     .d2h-file-name-wrapper {
@@ -81,38 +130,32 @@ const style = css`
       white-space: nowrap;
     }
 
-    .d2h-dark-color-scheme {
-      .d2h-code-linenumber,
-      .d2h-code-side-linenumber {
-        background-color: var(--d2h-dark-bg-color);
+    /* Line numbers overlay the horizontally scrolling code, so dark scheme's
+       translucent row tints must sit on an opaque base */
+    .d2h-dark-color-scheme :is(.d2h-code-linenumber, .d2h-code-side-linenumber) {
+      --tint: transparent;
+      background: linear-gradient(var(--tint), var(--tint)) var(--d2h-dark-bg-color);
 
-        &.d2h-ins {
-          background: linear-gradient(var(--d2h-dark-ins-bg-color), var(--d2h-dark-ins-bg-color)) var(--d2h-dark-bg-color);
-
-          &.d2h-change {
-            background: linear-gradient(var(--d2h-dark-change-ins-color), var(--d2h-dark-change-ins-color)) var(--d2h-dark-bg-color);
-          }
-        }
-
-        &.d2h-del {
-          background: linear-gradient(var(--d2h-dark-del-bg-color), var(--d2h-dark-del-bg-color)) var(--d2h-dark-bg-color);
-
-          &.d2h-change {
-            background: linear-gradient(var(--d2h-dark-change-del-color), var(--d2h-dark-change-del-color)) var(--d2h-dark-bg-color);
-          }
-        }
-
-        &.d2h-info {
-          background: linear-gradient(var(--d2h-dark-info-bg-color), var(--d2h-dark-info-bg-color)) var(--d2h-dark-bg-color);
-        }
-
-        &.d2h-emptyplaceholder {
-          background: linear-gradient(var(--d2h-dark-empty-placeholder-bg-color), var(--d2h-dark-empty-placeholder-bg-color)) var(--d2h-dark-bg-color);
-        }
+      &.d2h-ins {
+        --tint: var(--d2h-dark-ins-bg-color);
+      }
+      &.d2h-ins.d2h-change {
+        --tint: var(--d2h-dark-change-ins-color);
+      }
+      &.d2h-del {
+        --tint: var(--d2h-dark-del-bg-color);
+      }
+      &.d2h-del.d2h-change {
+        --tint: var(--d2h-dark-change-del-color);
+      }
+      &.d2h-info {
+        --tint: var(--d2h-dark-info-bg-color);
+      }
+      &.d2h-emptyplaceholder {
+        --tint: var(--d2h-dark-empty-placeholder-bg-color);
       }
     }
   }
-
 
   :host([no-header]) {
     .d2h-file-header {
@@ -133,7 +176,7 @@ const style = css`
 
 @customElement('gem-bind-diff2html')
 @adoptedStyle(style)
-@adoptedStyle(blockContainer)
+@adoptedStyle(flexContainer)
 @shadow()
 export class GemBindDiff2htmlElement extends GemElement {
   @attribute outputFormat: 'line-by-line' | 'side-by-side';

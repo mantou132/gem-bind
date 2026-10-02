@@ -45,3 +45,5 @@ Stylesheets are fetched once and shared across all instances:
 - diff2html's stylesheet always loads;
 - a highlight.js theme (`github` or `github-dark`, picked by `colorScheme`) loads only when highlighting is enabled;
 - extra styles can be injected via the `mdStyle` property (`CSSStyleSheet`).
+
+When the element is taller than the diff (e.g. `flex: 1` or a fixed height), the last file stretches to fill it: the blank area keeps scrolling horizontally and the line-number gutter continues to the bottom.
