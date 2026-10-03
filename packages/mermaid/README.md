@@ -27,6 +27,16 @@ Changing the light-DOM text automatically renders the diagram again. The element
 `startOnLoad` defaults to `false`, `securityLevel` to `strict`, and `suppressErrorRendering` to `true`. Values passed
 through `config` can override these defaults.
 
+Without `config.theme`, the `dark` theme is used when the element's `color-scheme` is `dark`, or `light dark` with a dark
+system preference; the diagram re-renders when the system preference changes.
+
+## States
+
+| State     | Description                                                   |
+| --------- | ------------------------------------------------------------- |
+| `loading` | A render is in progress                                       |
+| `error`   | The source failed to render; the raw source is shown instead |
+
 ## Navigation
 
 - Drag or use arrow keys to move the diagram after zooming.

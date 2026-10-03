@@ -26,6 +26,7 @@ type RenderState = {
   svg?: SVGSVGElement;
   bindFunctions?: (element: Element) => void;
   isZoomed?: boolean;
+  error?: boolean;
 };
 
 const style = css`
@@ -46,6 +47,14 @@ const style = css`
 
   :host(:state(loading)) {
     cursor: progress;
+  }
+
+  .source {
+    margin: 0;
+    font-family: ${theme.codeFont};
+    font-size: 0.875em;
+    white-space: pre-wrap;
+    color: ${theme.describeColor};
   }
 
   :host(:focus-visible) {
@@ -125,15 +134,16 @@ const renderMermaid = <T>(task: () => Promise<T>) => {
 };
 
 const parseSvg = (source: string) => {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(source, 'image/svg+xml');
-  if (!doc.querySelector('parsererror')) {
-    const parsedSvg = doc.querySelector('svg');
-    if (parsedSvg) {
-      return document.importNode(parsedSvg, true) as SVGSVGElement;
-    }
-  }
+  // Parse as HTML: htmlLabels emit HTML (e.g. `<br>`) inside foreignObject, which is not well-formed XML.
+  const doc = new DOMParser().parseFromString(source, 'text/html');
+  const parsedSvg = doc.querySelector('svg');
+  if (!parsedSvg) throw new Error('Mermaid returned invalid SVG');
+  return document.importNode(parsedSvg, true);
 };
+
+// `light dark` follows the system preference.
+const darkQuery = matchMedia('(prefers-color-scheme: dark)');
+const isDark = (colorScheme: string) => colorScheme === 'dark' || (colorScheme.includes('dark') && darkQuery.matches);
 
 const getViewBox = (svg?: SVGSVGElement): ViewBox | undefined => {
   const viewBox = svg?.viewBox.baseVal;
@@ -168,13 +178,21 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
 
   @state loading: boolean;
 
+  /** Set when the source fails to render; the raw source is shown instead. */
+  @state error: boolean;
+
   #state = createState<RenderState>({ source: '', isZoomed: false });
   #gestureRef = createRef<HTMLElement>();
   #observer = new MutationObserver(() => addMicrotask(this.#generateSvg));
   #rendering = false;
   #rerender = false;
   #renderedConfig?: MermaidConfig;
+  #renderedDark?: boolean;
   #initialViewBox?: ViewBox;
+
+  get #source() {
+    return this.textContent?.trim() || '';
+  }
 
   #setViewBox = (viewBox: ViewBox) => {
     if (!this.#state.svg || !this.#initialViewBox) return;
@@ -290,12 +308,14 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
     this.addEventListener('keydown', this.#onKeydown);
     this.addEventListener('dblclick', this.#onDblClick);
     this.addEventListener('show', this.#generateSvg);
+    darkQuery.addEventListener('change', this.#generateSvg);
     return () => {
       this.#observer.disconnect();
       this.removeEventListener('wheel', this.#onWheel);
       this.removeEventListener('keydown', this.#onKeydown);
       this.removeEventListener('dblclick', this.#onDblClick);
       this.removeEventListener('show', this.#generateSvg);
+      darkQuery.removeEventListener('change', this.#generateSvg);
     };
   };
 
@@ -315,15 +335,25 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
       return;
     }
 
-    const source = this.textContent?.trim() || '';
+    const source = this.#source;
     const requestedConfig = this.config;
-    if (source === this.#state.source && requestedConfig === this.#renderedConfig) return;
+    const dark = isDark(getComputedStyle(this).colorScheme);
+    const isCurrent = () => source === this.#source && requestedConfig === this.config;
+    if (source === this.#state.source && requestedConfig === this.#renderedConfig && dark === this.#renderedDark) {
+      return;
+    }
+
+    const commit = (state: Partial<RenderState>) => {
+      this.#renderedConfig = requestedConfig;
+      this.#renderedDark = dark;
+      this.error = !!state.error;
+      this.#state({ source, svg: undefined, bindFunctions: undefined, isZoomed: false, error: false, ...state });
+    };
 
     if (!source) {
       this.#initialViewBox = undefined;
-      this.#renderedConfig = requestedConfig;
       this.loading = false;
-      this.#state({ source: '', svg: undefined, bindFunctions: undefined, isZoomed: false });
+      commit({});
       return;
     }
 
@@ -332,10 +362,7 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
     this.loading = true;
 
     try {
-      const config = {
-        theme: getComputedStyle(this).colorScheme === 'dark' ? 'dark' : 'default',
-        ...requestedConfig,
-      } satisfies MermaidConfig;
+      const config = { theme: dark ? 'dark' : 'default', ...requestedConfig } satisfies MermaidConfig;
 
       let sankeyReplacements: Map<string, string> | undefined;
       const { svg, bindFunctions } = await renderMermaid(async () => {
@@ -358,31 +385,28 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
         }
       });
 
-      if (!this.isConnected || source !== this.textContent?.trim() || requestedConfig !== this.config) return;
+      if (!this.isConnected || !isCurrent()) return;
 
       const svgElement = parseSvg(svg);
-      if (svgElement) restoreSankeyLabels(svgElement, sankeyReplacements);
+      restoreSankeyLabels(svgElement, sankeyReplacements);
       this.#initialViewBox = getViewBox(svgElement);
-      this.#renderedConfig = requestedConfig;
-      this.#state({ source, svg: svgElement, bindFunctions, isZoomed: false });
+      commit({ svg: svgElement, bindFunctions });
     } catch (error) {
       console.error('Mermaid render failed:', error);
+      if (!this.isConnected || !isCurrent()) return;
+      this.#initialViewBox = undefined;
+      commit({ error: true });
     } finally {
       this.#rendering = false;
       this.loading = false;
-      if (
-        this.isConnected &&
-        (this.#rerender || source !== this.textContent?.trim() || requestedConfig !== this.config)
-      ) {
-        addMicrotask(this.#generateSvg);
-      }
+      if (this.isConnected && (this.#rerender || !isCurrent())) addMicrotask(this.#generateSvg);
     }
   };
 
   @effect((i) => [i.#state.svg])
   #bindMermaid = () => {
     const { source, svg, bindFunctions } = this.#state;
-    if (!svg || source !== this.textContent?.trim()) return;
+    if (!svg || source !== this.#source) return;
 
     const gesture = this.#gestureRef.value;
     if (!gesture) return;
@@ -390,7 +414,8 @@ export class GemBindMermaidElement extends DuoyunVisibleBaseElement {
   };
 
   render = () => {
-    const svg = this.#state.svg;
+    const { svg, error, source } = this.#state;
+    if (error) return html`<pre class="source">${source}</pre>`;
 
     return html`
       <dy-gesture

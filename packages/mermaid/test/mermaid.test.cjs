@@ -49,6 +49,13 @@ function setup(render) {
   };
   const noop = () => {};
   const configs = [];
+  const env = { colorScheme: 'light' };
+  const media = {
+    matches: false,
+    listeners: new Set(),
+    addEventListener: (_name, fn) => media.listeners.add(fn),
+    removeEventListener: (_name, fn) => media.listeners.delete(fn),
+  };
   const mermaid = { initialize: (config) => configs.push(config), render };
   const exports = {};
   vm.runInNewContext(compile('index.ts'), {
@@ -82,7 +89,8 @@ function setup(render) {
       observe() {}
       disconnect() {}
     },
-    getComputedStyle: () => ({ colorScheme: 'light' }),
+    getComputedStyle: () => ({ colorScheme: env.colorScheme }),
+    matchMedia: () => media,
     DOMParser: class {
       parseFromString() {
         return { querySelector: (name) => (name === 'svg' ? svg : null) };
@@ -100,7 +108,7 @@ function setup(render) {
     },
     console,
   });
-  return { Element: exports.GemBindMermaidElement, svg, configs };
+  return { Element: exports.GemBindMermaidElement, svg, configs, env, media };
 }
 
 const flush = () => new Promise((resolve) => setImmediate(resolve));
@@ -193,4 +201,48 @@ test('zoom anchor and drag use screen-to-SVG coordinates including letterboxing'
   const pan = element.render()[2];
   pan({ detail: { x: 10, y: 10 } });
   assert.deepEqual(svg.viewBox.baseVal, { x: 290, y: 15, width: 600, height: 100 });
+});
+
+test('render failure shows the raw source and recovers on the next valid source', async () => {
+  let fail = true;
+  const sources = [];
+  const { Element, svg } = setup(async (_id, source) => {
+    sources.push(source);
+    if (fail) throw new Error('Parse error');
+    return { svg: '<svg />' };
+  });
+  const element = new Element();
+  const { error } = console;
+  console.error = () => {};
+  try {
+    await generate(element);
+  } finally {
+    console.error = error;
+  }
+  assert.equal(element.error, true);
+  assert.deepEqual(element.render(), [element.textContent]);
+  // The same failing source is not retried on every `show`.
+  await generate(element);
+  assert.equal(sources.length, 1);
+
+  fail = false;
+  element.textContent = 'flowchart LR\nB --> C';
+  await generate(element);
+  assert.equal(element.error, false);
+  assert.equal(element.render().includes(svg), true);
+});
+
+test('`light dark` follows the system preference and re-renders when it changes', async () => {
+  const { Element, configs, env, media } = setup(async () => ({ svg: '<svg />' }));
+  env.colorScheme = 'light dark';
+  media.matches = true;
+  const element = new Element();
+  element.effects.get('#observeSource')();
+  await generate(element);
+  media.matches = false;
+  for (const fn of media.listeners) await fn();
+  assert.deepEqual(
+    configs.map((config) => config.theme),
+    ['dark', 'default'],
+  );
 });
