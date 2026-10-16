@@ -1,6 +1,6 @@
 {
   "name": "@gem-bind/echarts",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Apache ECharts gem element",
   "keywords": [
     "gem",
