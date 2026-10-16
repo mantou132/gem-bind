@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@swc/helpers": "^0.5.23",
-    "katex": "^0.18.4"
+    "katex": "^0.16.47"
   },
   "devDependencies": {
     "@gem-bind/config": "^2.1.1",

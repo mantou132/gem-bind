@@ -97,11 +97,11 @@ importers:
   packages/examples:
     dependencies:
       '@gem-bind/diff2html':
-        specifier: ^0.0.5
+        specifier: ^0.0.6
         version: link:../diff2html
       '@gem-bind/echarts':
         specifier: ^0.0.1
-        version: link:../echarts
+        version: 0.0.1(@mantou/gem@2.2.11)(duoyun-ui@2.2.13(@mantou/gem@2.2.11))
       '@gem-bind/flow':
         specifier: ^0.0.3
         version: link:../flow
@@ -168,8 +168,8 @@ importers:
         specifier: ^0.5.23
         version: 0.5.23
       katex:
-        specifier: ^0.18.4
-        version: 0.18.4
+        specifier: ^0.16.47
+        version: 0.16.47
     devDependencies:
       '@gem-bind/config':
         specifier: ^2.1.1
@@ -359,6 +359,12 @@ packages:
 
   '@epic-web/invariant@1.0.0':
     resolution: {integrity: sha512-lrTPqgvfFQtR/eY/qkIzp98OGdNJu0m5ji3q/nJI8v3SXkRKEnWiOxMmbvcSoAIzv/cGiuvRy57k4suKQSAdwA==}
+
+  '@gem-bind/echarts@0.0.1':
+    resolution: {integrity: sha512-gHtxtvqqnleEFj/iL9RS/T5UTufzRWS+CA4CjbKdBPYSODjbQWSTI+3gj+KVM6jmMBxtupErOCMYfU6DjbV+UA==}
+    peerDependencies:
+      '@mantou/gem': ^2.0.0
+      duoyun-ui: ^2.0.0
 
   '@hutson/parse-repository-url@3.0.2':
     resolution: {integrity: sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==}
@@ -2549,10 +2555,6 @@ packages:
     resolution: {integrity: sha512-Eeo8Ys1doU1z+x8AZsPpQu+p/QcZBI5PeOo7QGQdy2x2m0MU/hYagBbGOmXwr5KVbEfVuWv9LpnQWeehogurjg==}
     hasBin: true
 
-  katex@0.18.4:
-    resolution: {integrity: sha512-IMPntbRLOU+eu88XDiFKqQ8Akhr9Tv7jDMXqPhjG9SI1JMA4DIgXk4x9k4skJz2NZJXBRbC+2pYBLj9olqcZow==}
-    hasBin: true
-
   keyv@5.6.0:
     resolution: {integrity: sha512-CYDD3SOtsHtyXeEORYRx2qBtpDJFjRTGXUtmNEMGyzYOKj1TE3tycdlho7kA1Ufx9OYWZzg52QFBGALTirzDSw==}
 
@@ -4004,6 +4006,13 @@ snapshots:
       tslib: 2.8.1
 
   '@epic-web/invariant@1.0.0': {}
+
+  '@gem-bind/echarts@0.0.1(@mantou/gem@2.2.11)(duoyun-ui@2.2.13(@mantou/gem@2.2.11))':
+    dependencies:
+      '@mantou/gem': 2.2.11
+      '@swc/helpers': 0.5.23
+      duoyun-ui: 2.2.13(@mantou/gem@2.2.11)
+      echarts: 6.1.0
 
   '@hutson/parse-repository-url@3.0.2': {}
 
@@ -6330,10 +6339,6 @@ snapshots:
   just-diff@6.0.2: {}
 
   katex@0.16.47:
-    dependencies:
-      commander: 8.3.0
-
-  katex@0.18.4:
     dependencies:
       commander: 8.3.0
 
